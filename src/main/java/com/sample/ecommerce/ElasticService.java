@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hello;
+package com.sample.ecommerce;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,8 +18,6 @@ import java.nio.file.Paths;
 import static java.util.stream.Collectors.joining;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
-import org.elasticsearch.node.Node;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.stereotype.Service;
@@ -29,10 +27,10 @@ public class ElasticService {
 
     private static final Logger LOGGER = getLogger(ElasticService.class);
 
-    private final Node node;
+    private static final String ELASTIC_URL = "http://localhost:9200/ecommerce";
 
     public ElasticService() {
-        this.node = nodeBuilder().node();
+        
     }
 
     @PostConstruct
@@ -44,7 +42,7 @@ public class ElasticService {
     private void deleteIndex() throws IOException {
         LOGGER.info("Deleting Index");
 
-        URL url = new URL("http://localhost:9200/ecomercedata");
+        URL url = new URL(ELASTIC_URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("DELETE");
         conn.setRequestProperty("Accept", "application/json");
@@ -66,7 +64,7 @@ public class ElasticService {
         Stream<String> lines = Files.lines(path);
         String input = lines.collect(joining("\n")) + "\n";
 
-        URL url = new URL("http://localhost:9200/ecomercedata/_bulk");
+        URL url = new URL(ELASTIC_URL + "/_bulk");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
@@ -76,9 +74,7 @@ public class ElasticService {
         os.write(input.getBytes());
         os.flush();
 
-       
-            LOGGER.info("Bulk Uploaded" + conn.getResponseCode());
-       
+        LOGGER.info("Bulk Uploaded" + conn.getResponseCode());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 (conn.getInputStream())));

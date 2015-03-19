@@ -1,4 +1,4 @@
-package hello;
+package com.sample.ecommerce;
 
 import java.util.concurrent.atomic.AtomicLong;
 
