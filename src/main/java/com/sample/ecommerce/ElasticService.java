@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import static java.util.stream.Collectors.joining;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class ElasticService {
     private static final String ELASTIC_URL = "http://localhost:9200/ecommerce";
 
     public ElasticService() {
-        
+        nodeBuilder().node();
     }
 
     @PostConstruct
@@ -64,7 +65,7 @@ public class ElasticService {
         Stream<String> lines = Files.lines(path);
         String input = lines.collect(joining("\n")) + "\n";
 
-        URL url = new URL(ELASTIC_URL + "/_bulk");
+        URL url = new URL(ELASTIC_URL + "/products/_bulk");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
