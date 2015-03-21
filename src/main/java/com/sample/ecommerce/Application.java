@@ -4,14 +4,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.context.ApplicationListener;
+import org.zols.plugin.EnableCMS;
 
 @SpringBootApplication
-public class HelloWorldConfiguration {
+@EnableCMS
+public class Application {
 
     public static void main(String[] args) {
         
         SpringApplication springApplication
-                = new SpringApplication(HelloWorldConfiguration.class);
+                = new SpringApplication(Application.class);
         springApplication.addListeners(new ApplicationListener<EmbeddedServletContainerInitializedEvent>() {
             @Override
             public void onApplicationEvent(EmbeddedServletContainerInitializedEvent e) {
