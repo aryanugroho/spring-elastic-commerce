@@ -6,12 +6,13 @@
 package com.sample.ecommerce.domain;
 
 import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-/**
- *
- * @author wz07
- */
+@Document(indexName = "ecommerce",type = "products")
 public class Product {
+    
+    @Id
     private String id;
     private String title;
     private String brand;
@@ -33,6 +34,14 @@ public class Product {
         this.title = title;
     }
 
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
     public List<String> getCategories() {
         return categories;
     }
@@ -40,7 +49,5 @@ public class Product {
     public void setCategories(List<String> categories) {
         this.categories = categories;
     }
-    
-    
-    
+
 }
