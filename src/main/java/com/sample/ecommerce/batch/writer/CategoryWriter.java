@@ -7,20 +7,20 @@ package com.sample.ecommerce.batch.writer;
 
 import java.util.List;
 import org.springframework.batch.item.ItemWriter;
-import com.sample.ecommerce.domain.Product;
-import com.sample.ecommerce.service.ProductService;
+import com.sample.ecommerce.domain.Category;
+import com.sample.ecommerce.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductWriter implements ItemWriter<Product> {
+public class CategoryWriter implements ItemWriter<Category> {
     
     @Autowired
-    private ProductService productService;
+    private CategoryService categoryService;
 
     @Override
-    public void write(List<? extends Product> products) throws Exception {
-        productService.save(products);
+    public void write(List<? extends Category> categories) throws Exception {
+        categoryService.save(categories);
     }
     
 }

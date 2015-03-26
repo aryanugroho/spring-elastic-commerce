@@ -5,7 +5,6 @@
  */
 package com.sample.ecommerce.domain;
 
-import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -16,7 +15,7 @@ public class Product {
     private String id;
     private String title;
     private String brand;
-    private List<String> categories;
+    private String category;
 
     public String getId() {
         return id;
@@ -42,12 +41,11 @@ public class Product {
         this.brand = brand;
     }
 
-    public List<String> getCategories() {
-        return categories;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
-    }
-
+    public void setCategory(String category) {
+        this.category = category;
+    }    
 }

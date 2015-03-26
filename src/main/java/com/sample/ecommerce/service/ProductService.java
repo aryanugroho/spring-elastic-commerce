@@ -8,6 +8,7 @@ package com.sample.ecommerce.service;
 import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.repositories.ProductRepository;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,6 +94,12 @@ public class ProductService {
     public void deleteAll() {
         productRepository.deleteAll();
     }
+
+    public Iterable<Product> searchByKeyword(String keyword) {
+        return search(QueryBuilders.queryString(keyword));
+    }
+
+       
     
     
 }

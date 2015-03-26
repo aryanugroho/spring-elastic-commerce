@@ -5,9 +5,8 @@
  */
 package com.sample.ecommerce.web;
 
-import com.sample.ecommerce.domain.Product;
-import com.sample.ecommerce.service.ProductService;
-import org.elasticsearch.index.query.QueryBuilders;
+import com.sample.ecommerce.domain.Category;
+import com.sample.ecommerce.service.CategoryService;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,53 +23,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value="/api/products")
-public class ProductAPIController {
+@RequestMapping(value="/api/categories")
+public class CategoryAPIController {
 
-    private static final Logger LOGGER = getLogger(ProductAPIController.class);
+    private static final Logger LOGGER = getLogger(CategoryAPIController.class);
     
     @Autowired
-    private ProductService productService;    
+    private CategoryService categoryService;    
 
     @RequestMapping(method = POST)    
-    public Product create(@RequestBody Product product)  {
-        LOGGER.info("Creating new product {}", product);
-        return productService.save(product);
+    public Category create(@RequestBody Category category)  {
+        LOGGER.info("Creating new category {}", category);
+        return categoryService.save(category);
     }
 
     @RequestMapping(value = "/{id}", method = GET)    
-    public Product read(@PathVariable(value = "id") String id)  {
-        LOGGER.info("Getting product ", id);
-        return productService.findOne(id);
+    public Category read(@PathVariable(value = "id") String id)  {
+        LOGGER.info("Getting category ", id);
+        return categoryService.findOne(id);
     }
 
     @RequestMapping(value = "/{id}", method = PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@PathVariable(value = "id") String id,
-            @RequestBody Product product)  {        
-        if (id.equals(product.getId())) {
-            LOGGER.info("Updating product with id {} ", id);
-            productService.save(product);
+            @RequestBody Category category)  {        
+        if (id.equals(category.getId())) {
+            LOGGER.info("Updating category with id {} ", id);
+            categoryService.save(category);
         }
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(value = "id") String id)  {
-        LOGGER.info("Deleting products with id {}", id);
-        productService.delete(id);
+        LOGGER.info("Deleting categories with id {}", id);
+        categoryService.delete(id);
     }
     
     @RequestMapping(method = GET)    
-    public Iterable<Product> list()  {
-        LOGGER.info("Getting products ");
-        return productService.findAll();
+    public Iterable<Category> list()  {
+        LOGGER.info("Getting categories ");
+        return categoryService.findAll();
     }    
-    
-    @RequestMapping(value = "/search/{keyword}", method = GET)    
-    public Iterable<Product> searchByKeyword(@PathVariable(value = "keyword") String keyword)  {
-        LOGGER.info("Search products with keyword {} ", keyword);
-        return productService.searchByKeyword(keyword);
-    }
     
 }

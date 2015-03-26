@@ -6,8 +6,11 @@
 package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.domain.Product;
+import com.sample.ecommerce.service.ProductService;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,9 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/products")
 public class ProductController {
     
-    @RequestMapping(value = "/search/{keyword}", method = RequestMethod.GET)
-    public List<Product> keywordSearch(@PathVariable("keyword") String keyword) {
-        return null;
+    @Autowired
+    private ProductService productService;
+    
+    @RequestMapping(value = "/search/{keyword}")
+    public String keywordSearch(Model model,@PathVariable("keyword") String keyword) {
+        model.addAttribute("products", productService.searchByKeyword(keyword));        
+        return "shop";
     }
     
     @RequestMapping(value = "/{categoryName}/search/{keyword}", method = RequestMethod.GET)

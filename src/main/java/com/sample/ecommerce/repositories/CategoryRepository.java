@@ -5,15 +5,13 @@
  */
 package com.sample.ecommerce.repositories;
 
-import com.sample.ecommerce.domain.Product;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.sample.ecommerce.domain.Category;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
  *
  * @author wz07
  */
-public interface ProductRepository extends ElasticsearchRepository<Product,String> {    
+public interface CategoryRepository extends ElasticsearchRepository<Category,String> {
     
 }

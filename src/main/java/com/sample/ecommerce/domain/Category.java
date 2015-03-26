@@ -5,21 +5,23 @@
  */
 package com.sample.ecommerce.domain;
 
-/**
- *
- * @author wz07
- */
-public class Category {
-    
-    private String name;
-    private String label;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-    public String getName() {
-        return name;
+@Document(indexName = "ecommerce", type = "categories")
+public class Category {
+
+    @Id
+    private String id;
+    private String label;
+    private String parent;
+
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLabel() {
@@ -29,7 +31,14 @@ public class Category {
     public void setLabel(String label) {
         this.label = label;
     }
-    
-    
-    
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
+
+   
 }
