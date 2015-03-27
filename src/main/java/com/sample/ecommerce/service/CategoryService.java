@@ -6,7 +6,10 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Category;
+import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.repositories.CategoryRepository;
+import com.sample.ecommerce.repositories.ProductRepository;
+import java.util.List;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +24,14 @@ public class CategoryService {
     
     @Autowired
     private CategoryRepository categoryRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
 
+    public List<Product> findByCategory(String category) {
+        return productRepository.findByCategory(category);
+    }
+    
     public <S extends Category> S index(S s) {
         return categoryRepository.index(s);
     }

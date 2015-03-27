@@ -28,11 +28,6 @@ public class ProductController {
         return "shop";
     }
     
-    @RequestMapping(value = "/{categoryName}/search/{keyword}", method = RequestMethod.GET)
-    public List<Product> keywordSearchByCategory(@PathVariable("categoryName") String categoryName,@PathVariable("keyword") String keyword) {
-        return null;
-    }
-    
     @RequestMapping(value = "/{productId}", method = RequestMethod.GET)
     public Product get(@PathVariable("productId") String productId) {
         return null;

@@ -6,8 +6,7 @@
 package com.sample.ecommerce.repositories;
 
 import com.sample.ecommerce.domain.Product;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
@@ -15,5 +14,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @author wz07
  */
 public interface ProductRepository extends ElasticsearchRepository<Product,String> {    
-    
+    List<Product> findByCategory(String category);
 }
