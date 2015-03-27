@@ -135,7 +135,7 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="search_box pull-right">
-                                <input type="text" placeholder="Search"/>
+                                <input type="text" data-provide="typeahead" class="typeahead" placeholder="Search"/>
                             </div>
                         </div>
                     </div>
@@ -143,11 +143,7 @@
             </div>
         </header>
 
-        <section id="advertisement">
-            <div class="container">
-                <img src="images/shop/advertisement.jpg" th:src="@{/images/shop/advertisement.jpg}" alt="" />
-            </div>
-        </section>
+
 
         <section>
             <div class="container">
@@ -782,7 +778,11 @@
         <script src="js/price-range.js" th:src="@{/js/price-range.js}"></script>
         <script src="js/jquery.scrollUp.min.js" th:src="@{/js/jquery.scrollUp.min.js}"></script>
         <script src="js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+        <script src="js/bootstrap3-typeahead.min.js" th:src="@{/js/bootstrap3-typeahead.min.js}"></script>
         <script src="js/jquery.prettyPhoto.js" th:src="@{/js/jquery.prettyPhoto.js}"></script>
         <script src="js/main.js" th:src="@{/js/main.js}"></script>
+
+        
+
     </body>
 </html>
