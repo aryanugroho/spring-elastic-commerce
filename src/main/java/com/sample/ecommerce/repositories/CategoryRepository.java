@@ -6,6 +6,7 @@
 package com.sample.ecommerce.repositories;
 
 import com.sample.ecommerce.domain.Category;
+import java.util.List;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
@@ -13,5 +14,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @author wz07
  */
 public interface CategoryRepository extends ElasticsearchRepository<Category,String> {
-    
+    public List<Category> findByParent(String parent);
 }

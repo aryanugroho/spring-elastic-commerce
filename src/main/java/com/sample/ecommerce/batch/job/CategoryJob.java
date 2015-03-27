@@ -5,6 +5,7 @@
  */
 package com.sample.ecommerce.batch.job;
 
+import com.sample.ecommerce.batch.mapper.CategoryMapper;
 import com.sample.ecommerce.batch.writer.CategoryWriter;
 import com.sample.ecommerce.domain.Category;
 import org.springframework.batch.core.Job;
@@ -37,9 +38,7 @@ public class CategoryJob {
             setLineTokenizer(new DelimitedLineTokenizer() {{
                 setNames(new String[] { "id", "label","parent" });
             }});
-            setFieldSetMapper(new BeanWrapperFieldSetMapper<Category>() {{
-                setTargetType(Category.class);
-            }});
+            setFieldSetMapper(new CategoryMapper());
         }});
         
         Step step1 = stepBuilderFactory.get("step1")

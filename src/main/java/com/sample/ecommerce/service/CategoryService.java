@@ -9,6 +9,7 @@ import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.repositories.CategoryRepository;
 import com.sample.ecommerce.repositories.ProductRepository;
+import java.util.ArrayList;
 import java.util.List;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,57 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryService {
-    
+
     @Autowired
     private CategoryRepository categoryRepository;
-    
+
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> findByCategory(String category) {
-        return productRepository.findByCategory(category);
+    public List<Category> getParents(String categoryName) {
+        List<Category> parents = new ArrayList<>();
+        Category category;
+        String parent;
+        category = findOne(categoryName);
+        while (category != null) {
+            parent = category.getParent();
+            if (parent != null) {
+                category = findOne(parent);
+                parents.add(category);
+            } else {
+                break;
+            }
+        }
+        return (parents.isEmpty()) ? null : parents;
     }
     
+    public List<Category> getChildren(String categoryName) {
+        List<Category> children = categoryRepository.findByParent(categoryName);   
+        if( children != null ) {
+            for (Category child : children) {
+                child.setChildren(getChildren(child.getId()));
+            }
+        }
+        return children;        
+    }
+
+    public List<Product> findByCategory(String categoryName) {
+        List<Product> products ;
+        List<Category> children = getChildren(categoryName);
+        if(children == null) {
+            products = productRepository.findByCategory(categoryName);
+        }  
+        else {            
+            List<String> categoriesToLookFor = new ArrayList<>();
+            categoriesToLookFor.add(categoryName);
+            for (Category child : children) {
+                categoriesToLookFor.add(child.getId());
+            }
+            products = productRepository.findByCategoryIn(categoriesToLookFor);
+        }
+        return products;
+    }
+
     public <S extends Category> S index(S s) {
         return categoryRepository.index(s);
     }
@@ -103,7 +144,5 @@ public class CategoryService {
     public void deleteAll() {
         categoryRepository.deleteAll();
     }
-    
-    
 
 }

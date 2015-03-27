@@ -40,7 +40,7 @@ public class ProductAPIController {
 
     @RequestMapping(value = "/{id}", method = GET)    
     public Product read(@PathVariable(value = "id") String id)  {
-        LOGGER.info("Getting product ", id);
+        LOGGER.info("Getting product {}", id);
         return productService.findOne(id);
     }
 

@@ -7,6 +7,7 @@ package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.service.CategoryService;
+import java.util.List;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,20 @@ public class CategoryAPIController {
 
     @RequestMapping(value = "/{id}", method = GET)    
     public Category read(@PathVariable(value = "id") String id)  {
-        LOGGER.info("Getting category ", id);
+        LOGGER.info("Getting category {}", id);
         return categoryService.findOne(id);
+    }
+    
+    @RequestMapping(value = "/{id}/parents", method = GET)    
+    public List<Category> parents(@PathVariable(value = "id") String id)  {
+        LOGGER.info("Getting parents of category {}", id);
+        return categoryService.getParents(id);
+    }
+    
+    @RequestMapping(value = "/{id}/children", method = GET)    
+    public List<Category> children(@PathVariable(value = "id") String id)  {
+        LOGGER.info("Getting children of category {}", id);
+        return categoryService.getChildren(id);
     }
 
     @RequestMapping(value = "/{id}", method = PUT)

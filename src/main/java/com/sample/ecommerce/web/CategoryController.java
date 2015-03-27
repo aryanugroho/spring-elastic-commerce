@@ -21,6 +21,7 @@ public class CategoryController {
     
     @RequestMapping(value = "/{categoryName}")
     public String keywordSearchByCategory(Model model,@PathVariable("categoryName") String categoryName) {
+        model.addAttribute("parents", categoryService.getParents(categoryName));
         model.addAttribute("products", categoryService.findByCategory(categoryName));    
         return "shop";
     }

@@ -5,7 +5,9 @@
  */
 package com.sample.ecommerce.domain;
 
+import java.util.List;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @Document(indexName = "ecommerce", type = "categories")
@@ -15,6 +17,10 @@ public class Category {
     private String id;
     private String label;
     private String parent;
+    
+    @Transient
+    private List<Category> children;  
+    
 
     public String getId() {
         return id;
@@ -40,5 +46,12 @@ public class Category {
         this.parent = parent;
     }
 
+    public List<Category> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Category> children) {
+        this.children = children;
+    }
    
 }

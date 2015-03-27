@@ -148,6 +148,15 @@
         <section>
             <div class="container">
                 <div class="row">
+
+                    <ol class="breadcrumb" th:if="${parents != null}">
+                        <li th:each="parent : ${parents}"><a href="#" th:href="@{'/categories/'+${parent.id}}" th:text="${parent.label}">Home</a></li>
+                        <!--/*-->
+                        <li><a href="#">Library</a></li>
+                        <!--*/-->
+                        <li class="active">Data</li>
+                    </ol>   
+
                     <div class="col-sm-3">
                         <div class="left-sidebar">
                             <h2>Browse</h2>
@@ -602,14 +611,14 @@
                                 </div>
                             </div>
                             <!--*/-->
-                            
+
                         </div><!--features_items-->
                         <ul class="pagination">
-                                <li class="active"><a href="">1</a></li>
-                                <li><a href="">2</a></li>
-                                <li><a href="">3</a></li>
-                                <li><a href="">&raquo;</a></li>
-                            </ul>
+                            <li class="active"><a href="">1</a></li>
+                            <li><a href="">2</a></li>
+                            <li><a href="">3</a></li>
+                            <li><a href="">&raquo;</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -783,7 +792,7 @@
         <script src="js/jquery.prettyPhoto.js" th:src="@{/js/jquery.prettyPhoto.js}"></script>
         <script src="js/main.js" th:src="@{/js/main.js}"></script>
 
-        
+
 
     </body>
 </html>
