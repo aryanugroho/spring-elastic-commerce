@@ -11,6 +11,7 @@ import com.sample.ecommerce.repositories.CategoryRepository;
 import com.sample.ecommerce.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
+import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,11 +30,11 @@ public class CategoryService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Category> getParents(String categoryName) {
+    public List<Category> getParents(String categoryId) {
         List<Category> parents = new ArrayList<>();
         Category category;
         String parent;
-        category = findOne(categoryName);
+        category = findOne(categoryId);
         while (category != null) {
             parent = category.getParent();
             if (parent != null) {
@@ -43,34 +44,34 @@ public class CategoryService {
                 break;
             }
         }
-        return (parents.isEmpty()) ? null : parents;
+        return (parents.isEmpty()) ? null : Lists.reverse(parents);
     }
-    
-    public List<Category> getChildren(String categoryName) {
-        List<Category> children = categoryRepository.findByParent(categoryName);   
-        if( children != null ) {
+
+    public List<Category> getChildren(String categoryId) {
+        List<Category> children = categoryRepository.findByParent(categoryId);
+        if (children != null) {
             for (Category child : children) {
                 child.setChildren(getChildren(child.getId()));
             }
         }
-        return children;        
+        return children;
     }
 
-    public List<Product> findByCategory(String categoryName) {
-        List<Product> products ;
-        List<Category> children = getChildren(categoryName);
-        if(children == null) {
-            products = productRepository.findByCategory(categoryName);
-        }  
-        else {            
-            List<String> categoriesToLookFor = new ArrayList<>();
-            categoriesToLookFor.add(categoryName);
+    public List<Product> findByCategory(String categoryId) {
+        List<String> categoriesToLookFor = new ArrayList<>();
+        wallThroughChildren(categoriesToLookFor, categoryId); 
+        return productRepository.findByCategoryIn(categoriesToLookFor);
+    }
+
+    private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) {
+        List<Category> children = getChildren(categoryId);
+        categoriesToLookFor.add(categoryId);
+        if (children != null) {
             for (Category child : children) {
                 categoriesToLookFor.add(child.getId());
+                wallThroughChildren(categoriesToLookFor, child.getId());
             }
-            products = productRepository.findByCategoryIn(categoriesToLookFor);
         }
-        return products;
     }
 
     public <S extends Category> S index(S s) {

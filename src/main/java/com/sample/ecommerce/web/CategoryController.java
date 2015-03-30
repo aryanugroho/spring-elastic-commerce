@@ -19,15 +19,16 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
     
-    @RequestMapping(value = "/{categoryName}")
-    public String keywordSearchByCategory(Model model,@PathVariable("categoryName") String categoryName) {
-        model.addAttribute("parents", categoryService.getParents(categoryName));
-        model.addAttribute("products", categoryService.findByCategory(categoryName));    
+    @RequestMapping(value = "/{categoryId}")
+    public String browseByCategory(Model model,@PathVariable("categoryId") String categoryId) {
+        model.addAttribute("category", categoryService.findOne(categoryId));
+        model.addAttribute("parents", categoryService.getParents(categoryId));
+        model.addAttribute("products", categoryService.findByCategory(categoryId));    
         return "shop";
     }
 
-//    @RequestMapping(value = "/{categoryName}/search/{keyword}")
-//    public String browseByCategory(@PathVariable("categoryName") String categoryName, @PathVariable("keyword") String keyword) {
+//    @RequestMapping(value = "/{categoryId}/search/{keyword}")
+//    public String browseByCategory(@PathVariable("categoryId") String categoryId, @PathVariable("keyword") String keyword) {
 //        return "shop";
 //    }
 }

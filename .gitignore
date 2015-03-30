@@ -5,6 +5,6 @@
 bin/
 build/
 target/
-data/
+data/**
 **/nbproject
 **/nbactions.xml
