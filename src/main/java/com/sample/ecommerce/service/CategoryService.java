@@ -60,7 +60,7 @@ public class CategoryService {
     public List<Product> findByCategory(String categoryId) {
         List<String> categoriesToLookFor = new ArrayList<>();
         wallThroughChildren(categoriesToLookFor, categoryId); 
-        return productRepository.findByCategoryIn(categoriesToLookFor);
+        return productRepository.findByCategoriesIn(categoriesToLookFor);
     }
 
     private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) {

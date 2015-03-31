@@ -14,5 +14,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @author wz07
  */
 public interface ProductRepository extends ElasticsearchRepository<Product,String> {    
-    public List<Product> findByCategoryIn(List<String> category);
+    public List<Product> findByCategoriesIn(List<String> category);
 }

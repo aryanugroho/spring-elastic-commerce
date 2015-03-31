@@ -29,7 +29,8 @@ public class ProductController {
     }
     
     @RequestMapping(value = "/{productId}", method = RequestMethod.GET)
-    public Product get(@PathVariable("productId") String productId) {
-        return null;
+    public String get(Model model,@PathVariable("productId") String productId) {
+        model.addAttribute("product", productService.findOne(productId));    
+        return "product-details";
     }
 }

@@ -35,9 +35,7 @@ public class CategoryJob {
         FlatFileItemReader<Category> categoryreader = new FlatFileItemReader<>();
         categoryreader.setResource(new ClassPathResource("data/categories.csv"));
         categoryreader.setLineMapper(new DefaultLineMapper<Category>() {{
-            setLineTokenizer(new DelimitedLineTokenizer() {{
-                setNames(new String[] { "id", "label","parent" });
-            }});
+            setLineTokenizer(new DelimitedLineTokenizer());
             setFieldSetMapper(new CategoryMapper());
         }});
         
