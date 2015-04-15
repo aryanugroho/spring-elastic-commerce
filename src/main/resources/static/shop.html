@@ -148,9 +148,8 @@
         <section>
             <div class="container">
                 <div class="row">
-
-                    <ol class="breadcrumb" th:if="${parents != null}">
-                        <li th:each="parent : ${parents}"><a href="#" th:href="@{'/categories/'+${parent.id}}" th:text="${parent.label}">Home</a></li>
+                    <ol class="breadcrumb">
+                        <li th:if="${parents != null}" th:each="parent : ${parents}"><a href="#" th:href="@{'/categories/'+${parent.id}}" th:text="${parent.label}">Home</a></li>
                         <!--/*-->
                         <li><a href="#">Library</a></li>
                         <!--*/-->

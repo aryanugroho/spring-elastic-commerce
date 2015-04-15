@@ -54,7 +54,7 @@ public class CategoryService {
                 child.setChildren(getChildren(child.getId()));
             }
         }
-        return children;
+        return children.size() > 0 ? children : null;
     }
 
     public List<Product> findByCategory(String categoryId) {
@@ -111,7 +111,11 @@ public class CategoryService {
     }
 
     public Category findOne(String id) {
-        return categoryRepository.findOne(id);
+        Category category = categoryRepository.findOne(id);
+        if(category != null) {
+            category.setChildren(getChildren(id));
+        }        
+        return category;
     }
 
     public boolean exists(String id) {

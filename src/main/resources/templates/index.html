@@ -214,7 +214,7 @@
         </section><!--/slider-->
 
         <section>
-            <div class="container">
+            <div class="container" th:include="${viewName}::content" th:fragment="content">
                 <div class="row">
                     <div class="col-sm-3">
                         <div class="left-sidebar">
