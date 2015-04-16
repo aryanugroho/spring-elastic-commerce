@@ -38,7 +38,14 @@ $(document).ready(function () {
             {id: "electronics", name: "Electronics"},
             {id: "tvs", name: "TVs"},
             {id: "washingmachine", name: "Washingmachine"}
-        ],
+        ], templates: {
+            empty: [
+                '<div class="empty-message">',
+                'unable to find any Best Picture winners that match the current query',
+                '</div>'
+            ].join('\n'),
+            suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{id}}</p>')
+        },
         autoSelect: false});
     $input.change(function () {
         var current = $input.typeahead("getActive");

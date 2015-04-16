@@ -6,9 +6,7 @@
 package com.sample.ecommerce.batch.mapper;
 
 import com.sample.ecommerce.domain.Product;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.validation.BindException;
