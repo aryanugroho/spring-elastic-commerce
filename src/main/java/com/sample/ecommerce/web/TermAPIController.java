@@ -7,9 +7,11 @@ package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.domain.Term;
 import com.sample.ecommerce.service.TermService;
+import java.util.List;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,12 @@ public class TermAPIController {
     public Iterable<Term> list() {
         LOGGER.info("Getting terms ");
         return termService.findAll();
+    }
+    
+    @RequestMapping(value = "/suggest/{keyword}")
+    public List<Term> suggest(@PathVariable("keyword") String keyword) {
+        LOGGER.info("Getting terms ");
+        return termService.findByKeyword(keyword);
     }
 
 }

@@ -7,6 +7,7 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Term;
 import com.sample.ecommerce.repositories.TermRepository;
+import java.util.List;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,10 @@ public class TermService {
 
     @Autowired
     private TermRepository termRepository;
+
+    public List<Term> findByKeyword(String keyword) {
+        return termRepository.findByKeyword(keyword);
+    }
 
     public <S extends Term> S index(S s) {
         return termRepository.index(s);
