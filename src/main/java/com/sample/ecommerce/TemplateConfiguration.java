@@ -18,6 +18,7 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
+@Profile("develop")
 @Configuration
 @EnableConfigurationProperties(ThymeleafProperties.class)
 public class TemplateConfiguration {
