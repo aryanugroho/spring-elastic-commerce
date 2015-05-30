@@ -1,9 +1,9 @@
-1,iPhone,Apple,[mobiles]
-2,iMac,Apple,[desktop]
-3,iAir,Apple,[laptops]
-4,Galaxy Note,Samsung,[tablets]
-5,Nexus,Google,[tablets]
-6,Viera,Panasonic,[lcdtv]
-7,Bravia,Sony,[lcdtv]
-8,VAIO,Sony,[laptops]
-9,Mixx 3,Lenovo,[laptops:tablets]
+1,iPhone,Apple,[mobiles],/images/shop/product7.jpg
+2,iMac,Apple,[desktop],/images/shop/product8.jpg
+3,iAir,Apple,[laptops],/images/shop/product9.jpg
+4,Galaxy Note,Samsung,[tablets],/images/shop/product10.jpg
+5,Nexus,Google,[tablets],/images/shop/product11.jpg
+6,Viera,Panasonic,[lcdtv],/images/shop/product12.jpg
+7,Bravia,Sony,[lcdtv],/images/shop/product7.jpg
+8,VAIO,Sony,[laptops],/images/shop/product8.jpg
+9,Mixx 3,Lenovo,[laptops:tablets],/images/shop/product9.jpg

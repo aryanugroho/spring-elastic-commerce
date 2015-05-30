@@ -28,6 +28,7 @@ public class ProductMapper implements FieldSetMapper<Product> {
                 && categoriesTxt.trim().length() != 0) {
             product.setCategories(Arrays.asList(categoriesTxt.substring(1, categoriesTxt.length() - 1).split(":")));
         }
+        product.setImageUrl(fieldSet.readString(4));
         return product;
     }
 

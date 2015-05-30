@@ -9,13 +9,14 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = "ecommerce",type = "products")
+@Document(indexName = "ecommerce", type = "products")
 public class Product {
-    
+
     @Id
     private String id;
     private String title;
     private String brand;
+    private String imageUrl;
     private List<String> categories;
 
     public String getId() {
@@ -50,5 +51,12 @@ public class Product {
         this.categories = categories;
     }
 
-    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 }
