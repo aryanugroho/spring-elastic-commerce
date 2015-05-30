@@ -7,6 +7,10 @@
     <groupId>org.springframework</groupId>
     <artifactId>ecommerce</artifactId>
     <version>0.1.0</version>
+    
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -30,7 +34,7 @@
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.2</version>
         </dependency>
         
         <dependency>
@@ -39,11 +43,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-
-    <properties>
-        <java.version>1.7</java.version>
-    </properties>
 
     <build>
         <plugins>
