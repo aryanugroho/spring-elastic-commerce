@@ -7,21 +7,43 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.repositories.ProductRepository;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.FacetedPage;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
-    
+
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+    public Aggregations list() {
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withIndices("ecommerce").withTypes("products")
+                .addAggregation(terms("brand").field("brand"))
+                .build();
+        return elasticsearchTemplate.query(searchQuery, new ResultsExtractor<Aggregations>() {
+            @Override
+            public Aggregations extract(SearchResponse response) {
+                return response.getAggregations();
+            }
+        });
+    }
 
     public <S extends Product> S index(S s) {
         return productRepository.index(s);
@@ -99,7 +121,4 @@ public class ProductService {
         return search(QueryBuilders.queryString(keyword));
     }
 
-       
-    
-    
 }
