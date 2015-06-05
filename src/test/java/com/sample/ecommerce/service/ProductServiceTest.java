@@ -6,7 +6,7 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.Application;
-import org.elasticsearch.search.aggregations.Aggregations;
+import com.sample.ecommerce.domain.ProductsList;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,7 @@ public class ProductServiceTest {
     
     @Test
     public void test_listProducts() {
-        Aggregations aggregations = productService.list();
+        ProductsList aggregations = productService.list();
         Assert.assertNotNull(aggregations);
     }
 }
