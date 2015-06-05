@@ -22,36 +22,35 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
-@RequestMapping(value="/api/categories")
+@RequestMapping(value = "/api/categories")
 public class CategoryAPIController {
 
     private static final Logger LOGGER = getLogger(CategoryAPIController.class);
-    
-    @Autowired
-    private CategoryService categoryService;    
 
-    @RequestMapping(method = POST)    
-    public Category create(@RequestBody Category category)  {
+    @Autowired
+    private CategoryService categoryService;
+
+    @RequestMapping(method = POST)
+    public Category create(@RequestBody Category category) {
         LOGGER.info("Creating new category {}", category);
         return categoryService.save(category);
     }
 
-    @RequestMapping(value = "/{id}", method = GET)    
-    public Category read(@PathVariable(value = "id") String id)  {
+    @RequestMapping(value = "/{id}", method = GET)
+    public Category read(@PathVariable(value = "id") String id) {
         LOGGER.info("Getting category {}", id);
         return categoryService.findOne(id);
     }
-    
-    @RequestMapping(value = "/{id}/parents", method = GET)    
-    public List<Category> parents(@PathVariable(value = "id") String id)  {
+
+    @RequestMapping(value = "/{id}/parents", method = GET)
+    public List<Category> parents(@PathVariable(value = "id") String id) {
         LOGGER.info("Getting parents of category {}", id);
         return categoryService.getParents(id);
     }
-    
-    @RequestMapping(value = "/{id}/children", method = GET)    
-    public List<Category> children(@PathVariable(value = "id") String id)  {
+
+    @RequestMapping(value = "/{id}/children", method = GET)
+    public List<Category> children(@PathVariable(value = "id") String id) {
         LOGGER.info("Getting children of category {}", id);
         return categoryService.getChildren(id);
     }
@@ -59,24 +58,17 @@ public class CategoryAPIController {
     @RequestMapping(value = "/{id}", method = PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@PathVariable(value = "id") String id,
-            @RequestBody Category category)  {        
+            @RequestBody Category category) {
         if (id.equals(category.getId())) {
             LOGGER.info("Updating category with id {} ", id);
             categoryService.save(category);
         }
     }
 
-    @RequestMapping(value = "/{id}", method = DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable(value = "id") String id)  {
-        LOGGER.info("Deleting categories with id {}", id);
-        categoryService.delete(id);
-    }
-    
-    @RequestMapping(method = GET)    
-    public Iterable<Category> list()  {
+    @RequestMapping(method = GET)
+    public Iterable<Category> list() {
         LOGGER.info("Getting categories ");
         return categoryService.findAll();
-    }    
-    
+    }
+
 }

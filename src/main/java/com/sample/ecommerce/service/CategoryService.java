@@ -12,13 +12,7 @@ import com.sample.ecommerce.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.elasticsearch.common.collect.Lists;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.core.FacetedPage;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -59,7 +53,7 @@ public class CategoryService {
 
     public List<Product> findByCategory(String categoryId) {
         List<String> categoriesToLookFor = new ArrayList<>();
-        wallThroughChildren(categoriesToLookFor, categoryId); 
+        wallThroughChildren(categoriesToLookFor, categoryId);
         return productRepository.findByCategoriesIn(categoriesToLookFor);
     }
 
@@ -74,34 +68,6 @@ public class CategoryService {
         }
     }
 
-    public <S extends Category> S index(S s) {
-        return categoryRepository.index(s);
-    }
-
-    public Iterable<Category> search(QueryBuilder qb) {
-        return categoryRepository.search(qb);
-    }
-
-    public FacetedPage<Category> search(QueryBuilder qb, Pageable pgbl) {
-        return categoryRepository.search(qb, pgbl);
-    }
-
-    public FacetedPage<Category> search(SearchQuery sq) {
-        return categoryRepository.search(sq);
-    }
-
-    public Page<Category> searchSimilar(Category t, String[] strings, Pageable pgbl) {
-        return categoryRepository.searchSimilar(t, strings, pgbl);
-    }
-
-    public Iterable<Category> findAll(Sort sort) {
-        return categoryRepository.findAll(sort);
-    }
-
-    public Page<Category> findAll(Pageable pgbl) {
-        return categoryRepository.findAll(pgbl);
-    }
-
     public <S extends Category> S save(S s) {
         return categoryRepository.save(s);
     }
@@ -112,38 +78,14 @@ public class CategoryService {
 
     public Category findOne(String id) {
         Category category = categoryRepository.findOne(id);
-        if(category != null) {
+        if (category != null) {
             category.setChildren(getChildren(id));
-        }        
+        }
         return category;
-    }
-
-    public boolean exists(String id) {
-        return categoryRepository.exists(id);
     }
 
     public Iterable<Category> findAll() {
         return categoryRepository.findAll();
-    }
-
-    public Iterable<Category> findAll(Iterable<String> itrbl) {
-        return categoryRepository.findAll(itrbl);
-    }
-
-    public long count() {
-        return categoryRepository.count();
-    }
-
-    public void delete(String id) {
-        categoryRepository.delete(id);
-    }
-
-    public void delete(Category t) {
-        categoryRepository.delete(t);
-    }
-
-    public void delete(Iterable<? extends Category> itrbl) {
-        categoryRepository.delete(itrbl);
     }
 
     public void deleteAll() {

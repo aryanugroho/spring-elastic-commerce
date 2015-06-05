@@ -5,14 +5,16 @@ import com.sample.ecommerce.service.ProductService;
 import com.sample.ecommerce.service.TermService;
 import javax.annotation.PostConstruct;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 
 @SpringBootApplication
 @EnableBatchProcessing
-@Configuration
+@EnableSwagger2
 public class Application {
 
     @Autowired

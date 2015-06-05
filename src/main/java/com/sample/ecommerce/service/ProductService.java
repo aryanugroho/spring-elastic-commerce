@@ -37,40 +37,18 @@ public class ProductService {
                 .withIndices("ecommerce").withTypes("products")
                 .addAggregation(terms("brand").field("brand"))
                 .build();
+
         return elasticsearchTemplate.query(searchQuery, new ResultsExtractor<Aggregations>() {
             @Override
             public Aggregations extract(SearchResponse response) {
+                System.out.println(response.toString());
                 return response.getAggregations();
             }
         });
     }
 
-    public <S extends Product> S index(S s) {
-        return productRepository.index(s);
-    }
-
     public Iterable<Product> search(QueryBuilder qb) {
         return productRepository.search(qb);
-    }
-
-    public FacetedPage<Product> search(QueryBuilder qb, Pageable pgbl) {
-        return productRepository.search(qb, pgbl);
-    }
-
-    public FacetedPage<Product> search(SearchQuery sq) {
-        return productRepository.search(sq);
-    }
-
-    public Page<Product> searchSimilar(Product t, String[] strings, Pageable pgbl) {
-        return productRepository.searchSimilar(t, strings, pgbl);
-    }
-
-    public Iterable<Product> findAll(Sort sort) {
-        return productRepository.findAll(sort);
-    }
-
-    public Page<Product> findAll(Pageable pgbl) {
-        return productRepository.findAll(pgbl);
     }
 
     public <S extends Product> S save(S s) {
@@ -85,32 +63,8 @@ public class ProductService {
         return productRepository.findOne(id);
     }
 
-    public boolean exists(String id) {
-        return productRepository.exists(id);
-    }
-
     public Iterable<Product> findAll() {
         return productRepository.findAll();
-    }
-
-    public Iterable<Product> findAll(Iterable<String> itrbl) {
-        return productRepository.findAll(itrbl);
-    }
-
-    public long count() {
-        return productRepository.count();
-    }
-
-    public void delete(String id) {
-        productRepository.delete(id);
-    }
-
-    public void delete(Product t) {
-        productRepository.delete(t);
-    }
-
-    public void delete(Iterable<? extends Product> itrbl) {
-        productRepository.delete(itrbl);
     }
 
     public void deleteAll() {

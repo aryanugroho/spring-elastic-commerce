@@ -30,7 +30,7 @@ public class TermAPIController {
         LOGGER.info("Getting terms ");
         return termService.findAll();
     }
-    
+
     @RequestMapping(value = "/suggest/{keyword}")
     public List<Term> suggest(@PathVariable("keyword") String keyword) {
         LOGGER.info("Getting terms ");

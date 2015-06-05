@@ -5,9 +5,7 @@
  */
 package com.sample.ecommerce.web;
 
-import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.service.ProductService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
