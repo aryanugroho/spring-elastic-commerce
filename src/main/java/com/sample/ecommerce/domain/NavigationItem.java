@@ -12,7 +12,7 @@ package com.sample.ecommerce.domain;
 public abstract class NavigationItem {
 
     private String name;
-    private String count;
+    private long count;
 
     public String getName() {
         return name;
@@ -22,12 +22,17 @@ public abstract class NavigationItem {
         this.name = name;
     }
 
-    public String getCount() {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(String count) {
+    public void setCount(long count) {
         this.count = count;
+    }
+
+    @Override
+    public String toString() {
+        return "NavigationItem{" + "name=" + name + ", count=" + count + '}';
     }
 
 }

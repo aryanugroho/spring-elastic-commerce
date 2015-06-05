@@ -34,4 +34,10 @@ public class Navigation<T extends NavigationItem> {
         this.items = items;
     }
 
+    @Override
+    public String toString() {
+        return "Navigation{" + "name=" + name + ", items=" + items + '}';
+    }
+
+    
 }

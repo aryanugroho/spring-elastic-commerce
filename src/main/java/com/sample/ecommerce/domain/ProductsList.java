@@ -32,4 +32,11 @@ public class ProductsList {
         this.products = products;
     }
 
+    @Override
+    public String toString() {
+        return "ProductsList{" + "navigations=" + navigations + ", products=" + products + '}';
+    }
+    
+    
+
 }

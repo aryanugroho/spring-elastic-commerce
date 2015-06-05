@@ -11,10 +11,7 @@ package com.sample.ecommerce.domain;
  */
 public class TextItem extends NavigationItem {
 
-
     private String label;
-
-  
 
     public String getLabel() {
         return label;
