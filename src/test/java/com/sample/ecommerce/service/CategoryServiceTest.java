@@ -14,13 +14,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-public class ProductServiceTest {
-
+public class CategoryServiceTest {
+    
     @Autowired
-    private ProductService productService;
-
+    private CategoryService categoryService;
+    
+    
     @Test
     public void test_listProducts() {
-        
+        categoryService.list("electronics");
     }
+    
 }

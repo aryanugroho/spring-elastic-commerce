@@ -6,6 +6,7 @@
 package com.sample.ecommerce.domain;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.util.List;
 public class ProductsList {
 
     private List<Navigation> navigations;
-    private List<Product> products;
+    private List<Map> products;
 
     public List<Navigation> getNavigations() {
         return navigations;
@@ -24,11 +25,11 @@ public class ProductsList {
         this.navigations = navigations;
     }
 
-    public List<Product> getProducts() {
+    public List<Map> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<Map> products) {
         this.products = products;
     }
 
@@ -36,7 +37,5 @@ public class ProductsList {
     public String toString() {
         return "ProductsList{" + "navigations=" + navigations + ", products=" + products + '}';
     }
-    
-    
 
 }

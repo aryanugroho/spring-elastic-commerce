@@ -6,13 +6,28 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Category;
+import com.sample.ecommerce.domain.Navigation;
 import com.sample.ecommerce.domain.Product;
+import com.sample.ecommerce.domain.ProductsList;
+import com.sample.ecommerce.domain.TextItem;
 import com.sample.ecommerce.repositories.CategoryRepository;
 import com.sample.ecommerce.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import static java.util.stream.Collectors.toList;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.Aggregation;
+import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +38,57 @@ public class CategoryService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+    public ProductsList list(String categoryId) {
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withIndices("ecommerce").withTypes("products")
+                .addAggregation(terms("brand").field("brand"))
+                .withQuery(QueryBuilders.termsQuery("categories", categoriesToLookForProducts(categoryId)))
+                .build();
+
+        return elasticsearchTemplate.query(searchQuery, new ResultsExtractor<ProductsList>() {
+            @Override
+            public ProductsList extract(SearchResponse response) {
+                ProductsList productsList = new ProductsList();
+
+                List<Aggregation> aggregations = response.getAggregations().asList();
+
+                productsList.setNavigations(
+                        aggregations.stream().map(aggregation -> {
+                            Navigation navigation = new Navigation();
+                            navigation.setName(aggregation.getName());
+                            if (aggregation instanceof StringTerms) {
+                                StringTerms stringTerms = (StringTerms) aggregation;
+                                navigation.setItems(
+                                        stringTerms.getBuckets().stream().map(bucket -> {
+                                            TextItem textItem = new TextItem();
+                                            textItem.setName(bucket.getKey());
+                                            textItem.setCount(bucket.getDocCount());
+                                            return textItem;
+                                        }).collect(toList()));
+                            }
+
+                            return navigation;
+                        }).collect(toList()));
+
+                List<Map> products = new ArrayList<>();
+
+                SearchHit[] searchHits = response.getHits().hits();
+                for (SearchHit searchHit : searchHits) {
+                    products.add(searchHit.getSource());
+                }
+
+                productsList.setProducts(products);
+
+                System.out.println("List \n" + productsList);
+
+                return productsList;
+            }
+        });
+    }
 
     public List<Category> getParents(String categoryId) {
         List<Category> parents = new ArrayList<>();
@@ -51,10 +117,14 @@ public class CategoryService {
         return children.size() > 0 ? children : null;
     }
 
-    public List<Product> findByCategory(String categoryId) {
+    private String[] categoriesToLookForProducts(String categoryId) {
         List<String> categoriesToLookFor = new ArrayList<>();
         wallThroughChildren(categoriesToLookFor, categoryId);
-        return productRepository.findByCategoriesIn(categoriesToLookFor);
+        return categoriesToLookFor.toArray(new String[categoriesToLookFor.size()]);
+    }
+
+    public List<Product> findByCategory(String categoryId) {
+        return productRepository.findByCategoriesIn(categoriesToLookForProducts(categoryId));
     }
 
     private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) {
