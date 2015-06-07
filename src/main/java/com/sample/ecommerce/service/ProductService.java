@@ -18,7 +18,6 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-
     public Iterable<Product> search(QueryBuilder qb) {
         return productRepository.search(qb);
     }
@@ -29,14 +28,6 @@ public class ProductService {
 
     public <S extends Product> Iterable<S> save(Iterable<S> itrbl) {
         return productRepository.save(itrbl);
-    }
-
-    public Product findOne(String id) {
-        return productRepository.findOne(id);
-    }
-
-    public Iterable<Product> findAll() {
-        return productRepository.findAll();
     }
 
     public void deleteAll() {

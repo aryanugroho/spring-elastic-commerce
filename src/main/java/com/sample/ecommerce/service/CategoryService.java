@@ -140,10 +140,6 @@ public class CategoryService {
         }
     }
 
-    public <S extends Category> S save(S s) {
-        return categoryRepository.save(s);
-    }
-
     public <S extends Category> Iterable<S> save(Iterable<S> itrbl) {
         return categoryRepository.save(itrbl);
     }
@@ -154,10 +150,6 @@ public class CategoryService {
             category.setChildren(getChildren(id));
         }
         return category;
-    }
-
-    public Iterable<Category> findAll() {
-        return categoryRepository.findAll();
     }
 
     public void deleteAll() {
