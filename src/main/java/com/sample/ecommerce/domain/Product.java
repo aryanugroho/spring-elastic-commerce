@@ -19,6 +19,9 @@ public class Product {
     private String imageUrl;
     private List<String> categories;
 
+    //Specific to Some Categories
+    private String operatingSystem;
+
     public String getId() {
         return id;
     }
@@ -57,6 +60,14 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public void setOperatingSystem(String operatingSystem) {
+        this.operatingSystem = operatingSystem;
     }
 
 }

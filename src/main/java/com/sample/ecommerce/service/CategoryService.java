@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,14 +41,17 @@ public class CategoryService {
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
 
-    public ProductsList list(String categoryId) {
-        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+    public ProductsList listProducts(String categoryName) {
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
                 .withIndices("ecommerce").withTypes("products")
                 .addAggregation(terms("brand").field("brand"))
-                .withQuery(QueryBuilders.termsQuery("categories", categoriesToLookForProducts(categoryId)))
-                .build();
+                .withQuery(QueryBuilders.termsQuery("categories", categoriesToLookForProducts(categoryName)));
 
-        return elasticsearchTemplate.query(searchQuery, new ResultsExtractor<ProductsList>() {
+        if (categoryName.equals("mobiles")) {
+            queryBuilder.addAggregation(terms("operatingSystem").field("operatingSystem"));
+        }
+
+        return elasticsearchTemplate.query(queryBuilder.build(), new ResultsExtractor<ProductsList>() {
             @Override
             public ProductsList extract(SearchResponse response) {
                 ProductsList productsList = new ProductsList();

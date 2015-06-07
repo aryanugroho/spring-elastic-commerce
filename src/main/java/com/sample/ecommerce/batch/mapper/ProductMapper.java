@@ -29,6 +29,7 @@ public class ProductMapper implements FieldSetMapper<Product> {
             product.setCategories(Arrays.asList(categoriesTxt.substring(1, categoriesTxt.length() - 1).split(":")));
         }
         product.setImageUrl(fieldSet.readString(4));
+        product.setOperatingSystem(fieldSet.readString(5).trim().length() == 0 ? null : fieldSet.readString(5));
         return product;
     }
 

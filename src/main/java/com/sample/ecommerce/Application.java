@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
 @SpringBootApplication
 @EnableBatchProcessing
 public class Application {
@@ -29,10 +28,6 @@ public class Application {
         productService.deleteAll();
         categoryService.deleteAll();
         termService.deleteAll();
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class);
     }
 
 }
