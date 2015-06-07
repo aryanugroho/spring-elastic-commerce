@@ -5,7 +5,7 @@
  */
 package com.sample.ecommerce.service;
 
-import com.sample.ecommerce.Application;
+import com.sample.ecommerce.TestConfiguration;
 import com.sample.ecommerce.domain.Navigation;
 import java.util.List;
 import static junit.framework.TestCase.assertTrue;
@@ -16,7 +16,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = TestConfiguration.class)
 public class CategoryServiceTest {
 
     @Autowired
@@ -25,10 +25,15 @@ public class CategoryServiceTest {
     @Test
     public void test_listProducts() {
         List<Navigation> electronicsNavigations = categoryService.listProducts("electronics").getNavigations();
-        assertTrue("Only One Navigation (Brand)",electronicsNavigations.size() == 1);
-        
+        assertTrue("Only One Navigation (Brand)", electronicsNavigations.size() == 1);
+
         List<Navigation> mobilesNavigations = categoryService.listProducts("mobiles").getNavigations();
-        assertTrue("Only One Navigation (Brand and Operating System)",mobilesNavigations.size() == 2);
+        assertTrue("Only One Navigation (Brand and Operating System)", mobilesNavigations.size() == 2);
+    }
+
+    @Test
+    public void test_listWithFilter() {
+
     }
 
 }

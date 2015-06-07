@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableBatchProcessing
-public class Application {
+public class TestConfiguration {
 
     @Autowired
     private ProductService productService;
