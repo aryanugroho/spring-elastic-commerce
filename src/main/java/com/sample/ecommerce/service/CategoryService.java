@@ -7,17 +7,22 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.domain.Navigation;
+import com.sample.ecommerce.domain.NavigationFilter;
+import static com.sample.ecommerce.domain.NavigationFilter.Operator.*;
 import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.domain.ProductsList;
 import com.sample.ecommerce.domain.TextItem;
 import com.sample.ecommerce.repositories.CategoryRepository;
 import com.sample.ecommerce.repositories.ProductRepository;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static java.util.stream.Collectors.toList;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
@@ -42,10 +47,56 @@ public class CategoryService {
     private ElasticsearchTemplate elasticsearchTemplate;
 
     public ProductsList listProducts(String categoryName) {
+        return listProducts(categoryName, null);
+    }
+
+    private QueryBuilder getQueryBuilder(NavigationFilter navigationFilter) {
+        QueryBuilder queryBuilder = null;
+        switch (navigationFilter.getOperator()) {
+            case EXISTS_IN:
+                queryBuilder = QueryBuilders.termsQuery(navigationFilter.getName(), navigationFilter.getValue());
+                break;
+        }
+        return queryBuilder;
+    }
+
+    private QueryBuilder getQueryBuilder(List<NavigationFilter> navigationFilters) {
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
+        Map<String, List<NavigationFilter>> groups = new HashMap<>();
+
+        for (NavigationFilter navigationFilter : navigationFilters) {
+            groups.getOrDefault(navigationFilter.getName(), new ArrayList<>()).add(navigationFilter);
+        }
+
+        for (Map.Entry<String, List<NavigationFilter>> entrySet : groups.entrySet()) {
+            String key = entrySet.getKey();
+            List<NavigationFilter> value = entrySet.getValue();
+            if (value.size() == 1) {
+                boolQuery.must(getQueryBuilder(value.get(0)));
+            } else {
+
+            }
+        }
+
+        return boolQuery;
+    }
+
+    public ProductsList listProducts(String categoryName, List<NavigationFilter> navigationFilters) {
+
+        if (navigationFilters == null) {
+            navigationFilters = new ArrayList<>(1);
+        }
+
+        NavigationFilter navigationFilter
+                = new NavigationFilter("categories", EXISTS_IN, categoriesToLookForProducts(categoryName));
+
+        navigationFilters.add(navigationFilter);
+
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
                 .withIndices("ecommerce").withTypes("products")
                 .addAggregation(terms("brand").field("brand"))
-                .withQuery(QueryBuilders.termsQuery("categories", categoriesToLookForProducts(categoryName)));
+                .withQuery(getQueryBuilder(navigationFilters));
 
         if (categoryName.equals("mobiles")) {
             queryBuilder.addAggregation(terms("operatingSystem").field("operatingSystem"));
@@ -84,8 +135,6 @@ public class CategoryService {
                 }
 
                 productsList.setProducts(products);
-
-                System.out.println("List \n" + productsList);
 
                 return productsList;
             }
