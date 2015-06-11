@@ -7,7 +7,6 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.repositories.ProductRepository;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +17,6 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Iterable<Product> search(QueryBuilder qb) {
-        return productRepository.search(qb);
-    }
-
-    public <S extends Product> S save(S s) {
-        return productRepository.save(s);
-    }
-
     public <S extends Product> Iterable<S> save(Iterable<S> itrbl) {
         return productRepository.save(itrbl);
     }
@@ -35,7 +26,7 @@ public class ProductService {
     }
 
     public Iterable<Product> searchByKeyword(String keyword) {
-        return search(QueryBuilders.queryString(keyword));
+        return productRepository.search(QueryBuilders.queryString(keyword));
     }
 
 }

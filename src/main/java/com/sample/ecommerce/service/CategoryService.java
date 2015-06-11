@@ -7,8 +7,8 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.domain.Navigation;
-import com.sample.ecommerce.domain.NavigationFilter;
-import static com.sample.ecommerce.domain.NavigationFilter.Operator.*;
+import com.sample.ecommerce.domain.Filter;
+import static com.sample.ecommerce.domain.Filter.Operator.*;
 import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.domain.ProductsList;
 import com.sample.ecommerce.domain.TextItem;
@@ -30,6 +30,8 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -47,11 +49,11 @@ public class CategoryService {
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
 
-    public ProductsList listProducts(String categoryName) {
-        return listProducts(categoryName, null);
+    public ProductsList listProducts(String categoryName, int pageNumber, int pageSize) {
+        return listProducts(categoryName, null, pageNumber, pageSize);
     }
 
-    private QueryBuilder getQueryBuilder(NavigationFilter navigationFilter) {
+    private QueryBuilder getQueryBuilder(Filter navigationFilter) {
         QueryBuilder queryBuilder = null;
         switch (navigationFilter.getOperator()) {
             case EXISTS_IN:
@@ -64,26 +66,26 @@ public class CategoryService {
         return queryBuilder;
     }
 
-    private QueryBuilder getQueryBuilder(List<NavigationFilter> navigationFilters) {
+    private QueryBuilder getQueryBuilder(List<Filter> navigationFilters) {
         BoolQueryBuilder boolQuery = null;
 
         if (navigationFilters != null && navigationFilters.size() > 0) {
             boolQuery = QueryBuilders.boolQuery();
-            Map<String, List<NavigationFilter>> groups = new HashMap<>();
-            List<NavigationFilter> filterForName;
-            for (NavigationFilter navigationFilter : navigationFilters) {
+            Map<String, List<Filter>> groups = new HashMap<>();
+            List<Filter> filterForName;
+            for (Filter navigationFilter : navigationFilters) {
                 filterForName = groups.getOrDefault(navigationFilter.getName(), new ArrayList<>());
                 filterForName.add(navigationFilter);
                 groups.put(navigationFilter.getName(), filterForName);
             }
 
-            for (Map.Entry<String, List<NavigationFilter>> entrySet : groups.entrySet()) {
+            for (Map.Entry<String, List<Filter>> entrySet : groups.entrySet()) {
                 String key = entrySet.getKey();
-                List<NavigationFilter> value = entrySet.getValue();
+                List<Filter> value = entrySet.getValue();
                 if (value.size() == 1) {
                     boolQuery.must(getQueryBuilder(value.get(0)));
                 } else {
-                    for (NavigationFilter filter : value) {
+                    for (Filter filter : value) {
                         boolQuery.should(getQueryBuilder(filter));
                     }
                 }
@@ -93,9 +95,10 @@ public class CategoryService {
         return boolQuery;
     }
 
-    public ProductsList listProducts(String categoryName, List<NavigationFilter> navigationFilters) {
+    public ProductsList listProducts(String categoryName, List<Filter> navigationFilters, int pageNumber, int pageSize) {
 
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
+                .withPageable(new PageRequest(pageNumber, pageSize))
                 .withIndices("ecommerce").withTypes("products")
                 .addAggregation(terms("brand").field("brand"))
                 .withQuery(getQueryBuilder(navigationFilters))

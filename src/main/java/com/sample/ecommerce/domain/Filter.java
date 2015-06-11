@@ -10,7 +10,7 @@ package com.sample.ecommerce.domain;
  * @author wz07
  * @param <T>
  */
-public class NavigationFilter<T> {
+public class Filter<T> {
 
     /**
      * Describes Operator for Filters
@@ -62,7 +62,7 @@ public class NavigationFilter<T> {
      * @param operator operator of the filter
      * @param value value of the filter
      */
-    public NavigationFilter(String name, Operator operator, T value) {
+    public Filter(String name, Operator operator, T value) {
         this.name = name;
         this.operator = operator;
         this.value = value;
@@ -74,7 +74,7 @@ public class NavigationFilter<T> {
      * @param name name of the filter
      * @param operator operator of the filter
      */
-    public NavigationFilter(String name, Operator operator) {
+    public Filter(String name, Operator operator) {
         this.name = name;
         this.operator = operator;
         this.value = null;
