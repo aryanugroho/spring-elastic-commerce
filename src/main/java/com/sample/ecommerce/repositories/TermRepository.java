@@ -16,6 +16,29 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  */
 public interface TermRepository extends ElasticsearchRepository<Term, String> {
 
-    @Query("{ \"bool\": { \"should\": [ { \"match\": { \"term\": { \"type\": \"phrase_prefix\", \"query\": \"?0\", \"fuzziness\": \"AUTO\", \"prefix_length\": 1, \"max_expansions\": 100, \"boost\": 1 } } }, { \"match\": { \"term\": { \"query\": \"?0\", \"type\": \"phrase_prefix\", \"boost\": 2 } } } ] } }")
-    List<Term> findByKeyword(String keyword);
+    @Query("{\n"
+            + "                    \"bool\": {\n"
+            + "                        \"should\": [{\n"
+            + "    \"ids\" : {\n"
+            + "       \n"
+            + "        \"values\" : [\"?0\"]\n"
+            + "    }\n"
+            + "}, {\n"
+            + "                                \"prefix\": {\n"
+            + "                                    \"term\": {\n"
+            + "                                        \"value\": \"?0\",\n"
+            + "                                        \"boost\": 2.0\n"
+            + "                                    }\n"
+            + "                                }\n"
+            + "                            }, {\n"
+            + "                                \"term\": {\n"
+            + "                                    \"term\": {\n"
+            + "                                        \"value\": \"?0\",\n"
+            + "                                        \"boost\": 1.0\n"
+            + "                                    }\n"
+            + "                                }\n"
+            + "                            }]\n"
+            + "                    }\n"
+            + "                }")
+    List<Term> suggest(String keyword);
 }
