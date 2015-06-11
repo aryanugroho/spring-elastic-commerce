@@ -17,19 +17,22 @@ import org.springframework.validation.BindException;
  */
 public class ProductMapper implements FieldSetMapper<Product> {
 
+    private Integer productId = 0;
+
     @Override
     public Product mapFieldSet(FieldSet fieldSet) throws BindException {
+        productId++;
         Product product = new Product();
-        product.setId(fieldSet.readString(0));
-        product.setTitle(fieldSet.readString(1));
-        product.setBrand(fieldSet.readString(2));
-        String categoriesTxt = fieldSet.readString(3);
+        product.setId(productId.toString());
+        product.setTitle(fieldSet.readString(0));
+        product.setBrand(fieldSet.readString(1));
+        String categoriesTxt = fieldSet.readString(2);
         if (categoriesTxt != null
                 && categoriesTxt.trim().length() != 0) {
             product.setCategories(Arrays.asList(categoriesTxt.substring(1, categoriesTxt.length() - 1).split(":")));
         }
-        product.setImageUrl(fieldSet.readString(4));
-        product.setOperatingSystem(fieldSet.readString(5).trim().length() == 0 ? null : fieldSet.readString(5));
+        product.setImageUrl(fieldSet.readString(3));
+        product.setOperatingSystem(fieldSet.readString(4).trim().length() == 0 ? null : fieldSet.readString(4));
         return product;
     }
 

@@ -7,7 +7,10 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.TestConfiguration;
 import com.sample.ecommerce.domain.Navigation;
+import com.sample.ecommerce.domain.NavigationFilter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import static junit.framework.TestCase.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +36,19 @@ public class CategoryServiceTest {
 
     @Test
     public void test_listWithFilter() {
+        List<NavigationFilter> filters = Arrays.asList(new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "apple"));
+        List<Map> mobileProductsByApple = categoryService.listProducts("mobiles", filters).getProducts();
+        assertTrue("Only One Mobile with apple brand", mobileProductsByApple.size() == 1);
+
+    }
+
+    @Test
+    public void test_listWithMultipleFilter() {
+        List<NavigationFilter> filters
+                = Arrays.asList(new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "google"),
+                        new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "apple"));
+        List<Map> mobileProductsByApple = categoryService.listProducts("electronics", filters).getProducts();
+        assertTrue("Only One Mobile with apple brand", mobileProductsByApple.size() == 4);
 
     }
 

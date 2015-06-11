@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toList;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -56,26 +57,36 @@ public class CategoryService {
             case EXISTS_IN:
                 queryBuilder = QueryBuilders.termsQuery(navigationFilter.getName(), navigationFilter.getValue());
                 break;
+            case EQUALS:
+                queryBuilder = QueryBuilders.termQuery(navigationFilter.getName(), navigationFilter.getValue());
+                break;
         }
         return queryBuilder;
     }
 
     private QueryBuilder getQueryBuilder(List<NavigationFilter> navigationFilters) {
-        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        BoolQueryBuilder boolQuery = null;
 
-        Map<String, List<NavigationFilter>> groups = new HashMap<>();
+        if (navigationFilters != null && navigationFilters.size() > 0) {
+            boolQuery = QueryBuilders.boolQuery();
+            Map<String, List<NavigationFilter>> groups = new HashMap<>();
+            List<NavigationFilter> filterForName = null;
+            for (NavigationFilter navigationFilter : navigationFilters) {
+                filterForName = groups.getOrDefault(navigationFilter.getName(), new ArrayList<>());
+                filterForName.add(navigationFilter);
+                groups.put(navigationFilter.getName(), filterForName);
+            }
 
-        for (NavigationFilter navigationFilter : navigationFilters) {
-            groups.getOrDefault(navigationFilter.getName(), new ArrayList<>()).add(navigationFilter);
-        }
-
-        for (Map.Entry<String, List<NavigationFilter>> entrySet : groups.entrySet()) {
-            String key = entrySet.getKey();
-            List<NavigationFilter> value = entrySet.getValue();
-            if (value.size() == 1) {
-                boolQuery.must(getQueryBuilder(value.get(0)));
-            } else {
-
+            for (Map.Entry<String, List<NavigationFilter>> entrySet : groups.entrySet()) {
+                String key = entrySet.getKey();
+                List<NavigationFilter> value = entrySet.getValue();
+                if (value.size() == 1) {
+                    boolQuery.must(getQueryBuilder(value.get(0)));
+                } else {
+                    for (NavigationFilter filter : value) {
+                        boolQuery.should(getQueryBuilder(filter));
+                    }
+                }
             }
         }
 
@@ -84,19 +95,11 @@ public class CategoryService {
 
     public ProductsList listProducts(String categoryName, List<NavigationFilter> navigationFilters) {
 
-        if (navigationFilters == null) {
-            navigationFilters = new ArrayList<>(1);
-        }
-
-        NavigationFilter navigationFilter
-                = new NavigationFilter("categories", EXISTS_IN, categoriesToLookForProducts(categoryName));
-
-        navigationFilters.add(navigationFilter);
-
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
                 .withIndices("ecommerce").withTypes("products")
                 .addAggregation(terms("brand").field("brand"))
-                .withQuery(getQueryBuilder(navigationFilters));
+                .withQuery(getQueryBuilder(navigationFilters))
+                .withFilter(FilterBuilders.termsFilter("categories", categoriesToLookForProducts(categoryName)));
 
         if (categoryName.equals("mobiles")) {
             queryBuilder.addAggregation(terms("operatingSystem").field("operatingSystem"));
