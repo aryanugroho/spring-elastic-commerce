@@ -39,16 +39,36 @@ public class CategoryServiceTest {
         List<NavigationFilter> filters = Arrays.asList(new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "apple"));
         List<Map> mobileProductsByApple = categoryService.listProducts("mobiles", filters).getProducts();
         assertTrue("Only One Mobile with apple brand", mobileProductsByApple.size() == 1);
-
     }
 
     @Test
-    public void test_listWithMultipleFilter() {
+    public void test_listWithMultipleValueFilter() {
         List<NavigationFilter> filters
                 = Arrays.asList(new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "google"),
                         new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "apple"));
         List<Map> mobileProductsByApple = categoryService.listProducts("electronics", filters).getProducts();
         assertTrue("Only One Mobile with apple brand", mobileProductsByApple.size() == 4);
+
+    }
+
+    @Test
+    public void test_listWithMultipleTypeFilter() {
+        List<NavigationFilter> filters
+                = Arrays.asList(new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "google"),
+                        new NavigationFilter<String>("operatingSystem", NavigationFilter.Operator.EQUALS, "android"));
+        List<Map> mobileProductsByApple = categoryService.listProducts("electronics", filters).getProducts();
+        assertTrue("Only One Mobile with apple brand", mobileProductsByApple.size() == 1);
+
+    }
+
+    @Test
+    public void test_listWithMultipleType_MultipleValueFilter() {
+        List<NavigationFilter> filters
+                = Arrays.asList(new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "google"),
+                        new NavigationFilter<String>("brand", NavigationFilter.Operator.EQUALS, "sony"),
+                        new NavigationFilter<String>("operatingSystem", NavigationFilter.Operator.EQUALS, "android"));
+        List<Map> mobileProductsByApple = categoryService.listProducts("electronics", filters).getProducts();
+        assertTrue("Only One Mobile with apple brand", mobileProductsByApple.size() == 2);
 
     }
 

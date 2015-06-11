@@ -70,7 +70,7 @@ public class CategoryService {
         if (navigationFilters != null && navigationFilters.size() > 0) {
             boolQuery = QueryBuilders.boolQuery();
             Map<String, List<NavigationFilter>> groups = new HashMap<>();
-            List<NavigationFilter> filterForName = null;
+            List<NavigationFilter> filterForName;
             for (NavigationFilter navigationFilter : navigationFilters) {
                 filterForName = groups.getOrDefault(navigationFilter.getName(), new ArrayList<>());
                 filterForName.add(navigationFilter);
@@ -105,6 +105,7 @@ public class CategoryService {
             queryBuilder.addAggregation(terms("operatingSystem").field("operatingSystem"));
         }
 
+        System.out.println(queryBuilder.build().toString());
         return elasticsearchTemplate.query(queryBuilder.build(), new ResultsExtractor<ProductsList>() {
             @Override
             public ProductsList extract(SearchResponse response) {
