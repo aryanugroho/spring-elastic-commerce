@@ -29,9 +29,10 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -39,6 +40,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryService {
+
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(CategoryService.class);
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -67,10 +71,10 @@ public class CategoryService {
     }
 
     private QueryBuilder getQueryBuilder(List<Filter> navigationFilters) {
-        BoolQueryBuilder boolQuery = null;
+        BoolQueryBuilder queryForProducts = null;
 
         if (navigationFilters != null && navigationFilters.size() > 0) {
-            boolQuery = QueryBuilders.boolQuery();
+            queryForProducts = QueryBuilders.boolQuery();
             Map<String, List<Filter>> groups = new HashMap<>();
             List<Filter> filterForName;
             for (Filter navigationFilter : navigationFilters) {
@@ -83,16 +87,16 @@ public class CategoryService {
                 String key = entrySet.getKey();
                 List<Filter> value = entrySet.getValue();
                 if (value.size() == 1) {
-                    boolQuery.must(getQueryBuilder(value.get(0)));
+                    queryForProducts.must(getQueryBuilder(value.get(0)));
                 } else {
                     for (Filter filter : value) {
-                        boolQuery.should(getQueryBuilder(filter));
+                        queryForProducts.should(getQueryBuilder(filter));
                     }
                 }
             }
         }
-
-        return boolQuery;
+        LOGGER.debug("Query for Products {}", queryForProducts);
+        return queryForProducts;
     }
 
     public ProductsList listProducts(String categoryName, List<Filter> navigationFilters, int pageNumber, int pageSize) {
@@ -107,8 +111,6 @@ public class CategoryService {
         if (categoryName.equals("mobiles")) {
             queryBuilder.addAggregation(terms("operatingSystem").field("operatingSystem"));
         }
-
-        System.out.println(queryBuilder.build().toString());
         return elasticsearchTemplate.query(queryBuilder.build(), new ResultsExtractor<ProductsList>() {
             @Override
             public ProductsList extract(SearchResponse response) {
