@@ -111,6 +111,7 @@ public class CategoryService {
         if (categoryName.equals("mobiles")) {
             queryBuilder.addAggregation(terms("operatingSystem").field("operatingSystem"));
         }
+                
         return elasticsearchTemplate.query(queryBuilder.build(), new ResultsExtractor<ProductsList>() {
             @Override
             public ProductsList extract(SearchResponse response) {
