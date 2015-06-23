@@ -20,7 +20,7 @@ public class CategoryWriter implements ItemWriter<Category> {
 
     @Override
     public void write(List<? extends Category> categories) throws Exception {
-        categoryService.save(categories);
+        categoryService.save((Iterable<Category>) categories);
     }
     
 }

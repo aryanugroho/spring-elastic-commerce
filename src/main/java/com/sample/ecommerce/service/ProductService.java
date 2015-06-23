@@ -6,27 +6,30 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Product;
-import com.sample.ecommerce.repositories.ProductRepository;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zols.datastore.DataStore;
+import org.zols.datastore.elasticsearch.ElasticSearchDataStore;
+import org.zols.datatore.exception.DataStoreException;
 
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final DataStore dataStore;
 
-    public <S extends Product> Iterable<S> save(Iterable<S> itrbl) {
-        return productRepository.save(itrbl);
+    public ProductService() {
+        dataStore = new ElasticSearchDataStore("ecommerce");
     }
 
-    public void deleteAll() {
-        productRepository.deleteAll();
+    public <S extends Product> Iterable<Product> save(Iterable<Product> itrbl) throws DataStoreException {
+        return dataStore.create(Product.class, itrbl);
+    }
+
+    public void deleteAll() throws DataStoreException {
+        dataStore.delete(Product.class);
     }
 
     public Iterable<Product> searchByKeyword(String keyword) {
-        return productRepository.search(QueryBuilders.queryString(keyword));
+        return null;
     }
 
 }

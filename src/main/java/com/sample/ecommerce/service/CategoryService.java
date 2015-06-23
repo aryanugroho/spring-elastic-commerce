@@ -6,37 +6,21 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Category;
-import com.sample.ecommerce.domain.Navigation;
-import com.sample.ecommerce.domain.Filter;
-import static com.sample.ecommerce.domain.Filter.Operator.*;
 import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.domain.ProductsList;
-import com.sample.ecommerce.domain.TextItem;
-import com.sample.ecommerce.repositories.CategoryRepository;
-import com.sample.ecommerce.repositories.ProductRepository;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import static java.util.stream.Collectors.toList;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Lists;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.aggregations.Aggregation;
-import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
-import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.ResultsExtractor;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+import org.zols.datastore.DataStore;
+import org.zols.datastore.elasticsearch.ElasticSearchDataStore;
+import org.zols.datastore.query.Filter;
+import static org.zols.datastore.query.Filter.Operator.EQUALS;
+import static org.zols.datastore.query.Filter.Operator.EXISTS_IN;
+import org.zols.datastore.query.Query;
+import org.zols.datatore.exception.DataStoreException;
 
 @Service
 public class CategoryService {
@@ -44,114 +28,21 @@ public class CategoryService {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(CategoryService.class);
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final DataStore dataStore;
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    public CategoryService() {
+        dataStore = new ElasticSearchDataStore("ecommerce");
+    }
 
     public ProductsList listProducts(String categoryName, int pageNumber, int pageSize) {
-        return listProducts(categoryName, null, pageNumber, pageSize);
-    }
-
-    private QueryBuilder getQueryBuilder(Filter navigationFilter) {
-        QueryBuilder queryBuilder = null;
-        switch (navigationFilter.getOperator()) {
-            case EXISTS_IN:
-                queryBuilder = QueryBuilders.termsQuery(navigationFilter.getName(), navigationFilter.getValue());
-                break;
-            case EQUALS:
-                queryBuilder = QueryBuilders.termQuery(navigationFilter.getName(), navigationFilter.getValue());
-                break;
-        }
-        return queryBuilder;
-    }
-
-    private QueryBuilder getQueryBuilder(List<Filter> navigationFilters) {
-        BoolQueryBuilder queryForProducts = null;
-
-        if (navigationFilters != null && navigationFilters.size() > 0) {
-            queryForProducts = QueryBuilders.boolQuery();
-            Map<String, List<Filter>> groups = new HashMap<>();
-            List<Filter> filterForName;
-            for (Filter navigationFilter : navigationFilters) {
-                filterForName = groups.getOrDefault(navigationFilter.getName(), new ArrayList<>());
-                filterForName.add(navigationFilter);
-                groups.put(navigationFilter.getName(), filterForName);
-            }
-
-            for (Map.Entry<String, List<Filter>> entrySet : groups.entrySet()) {
-                String key = entrySet.getKey();
-                List<Filter> value = entrySet.getValue();
-                if (value.size() == 1) {
-                    queryForProducts.must(getQueryBuilder(value.get(0)));
-                } else {
-                    for (Filter filter : value) {
-                        queryForProducts.should(getQueryBuilder(filter));
-                    }
-                }
-            }
-        }
-        LOGGER.debug("Query for Products {}", queryForProducts);
-        return queryForProducts;
+        return null;
     }
 
     public ProductsList listProducts(String categoryName, List<Filter> navigationFilters, int pageNumber, int pageSize) {
-
-        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
-                .withPageable(new PageRequest(pageNumber, pageSize))
-                .withIndices("ecommerce").withTypes("products")
-                .addAggregation(terms("brand").field("brand"))
-                .withQuery(getQueryBuilder(navigationFilters))
-                .withFilter(FilterBuilders.termsFilter("categories", categoriesToLookForProducts(categoryName)));
-
-        if (categoryName.equals("mobiles")) {
-            queryBuilder.addAggregation(terms("operatingSystem").field("operatingSystem"));
-        }
-                
-        return elasticsearchTemplate.query(queryBuilder.build(), new ResultsExtractor<ProductsList>() {
-            @Override
-            public ProductsList extract(SearchResponse response) {
-                ProductsList productsList = new ProductsList();
-
-                List<Aggregation> aggregations = response.getAggregations().asList();
-
-                productsList.setNavigations(
-                        aggregations.stream().map(aggregation -> {
-                            Navigation navigation = new Navigation();
-                            navigation.setName(aggregation.getName());
-                            if (aggregation instanceof StringTerms) {
-                                StringTerms stringTerms = (StringTerms) aggregation;
-                                navigation.setItems(
-                                        stringTerms.getBuckets().stream().map(bucket -> {
-                                            TextItem textItem = new TextItem();
-                                            textItem.setName(bucket.getKey());
-                                            textItem.setCount(bucket.getDocCount());
-                                            return textItem;
-                                        }).collect(toList()));
-                            }
-
-                            return navigation;
-                        }).collect(toList()));
-
-                List<Map> products = new ArrayList<>();
-
-                SearchHit[] searchHits = response.getHits().hits();
-                for (SearchHit searchHit : searchHits) {
-                    products.add(searchHit.getSource());
-                }
-
-                productsList.setProducts(products);
-
-                return productsList;
-            }
-        });
+        return null;
     }
 
-    public List<Category> getParents(String categoryId) {
+    public List<Category> getParents(String categoryId) throws DataStoreException {
         List<Category> parents = new ArrayList<>();
         Category category;
         String parent;
@@ -168,8 +59,10 @@ public class CategoryService {
         return (parents.isEmpty()) ? null : Lists.reverse(parents);
     }
 
-    public List<Category> getChildren(String categoryId) {
-        List<Category> children = categoryRepository.findByParent(categoryId);
+    public List<Category> getChildren(String categoryId) throws DataStoreException {
+        Query query = new Query();
+        query.addFilter(new Filter<>("parent", EQUALS, categoryId));
+        List<Category> children = dataStore.list(Category.class, query);
         if (children != null) {
             for (Category child : children) {
                 child.setChildren(getChildren(child.getId()));
@@ -178,17 +71,19 @@ public class CategoryService {
         return children.size() > 0 ? children : null;
     }
 
-    private String[] categoriesToLookForProducts(String categoryId) {
+    private String[] categoriesToLookForProducts(String categoryId) throws DataStoreException {
         List<String> categoriesToLookFor = new ArrayList<>();
         wallThroughChildren(categoriesToLookFor, categoryId);
         return categoriesToLookFor.toArray(new String[categoriesToLookFor.size()]);
     }
 
-    public List<Product> findByCategory(String categoryId) {
-        return productRepository.findByCategoriesIn(categoriesToLookForProducts(categoryId));
+    public List<Product> findByCategory(String categoryId) throws DataStoreException {
+        Query query = new Query();
+        query.addFilter(new Filter<>("categories", EXISTS_IN, categoriesToLookForProducts(categoryId)));
+        return dataStore.list(Product.class, query);
     }
 
-    private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) {
+    private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) throws DataStoreException {
         List<Category> children = getChildren(categoryId);
         categoriesToLookFor.add(categoryId);
         if (children != null) {
@@ -199,20 +94,20 @@ public class CategoryService {
         }
     }
 
-    public <S extends Category> Iterable<S> save(Iterable<S> itrbl) {
-        return categoryRepository.save(itrbl);
+    public <S extends Category> Iterable<Category> save(Iterable<Category> itrbl) throws DataStoreException {
+        return dataStore.create(Category.class, itrbl);
     }
 
-    public Category findOne(String id) {
-        Category category = categoryRepository.findOne(id);
+    public Category findOne(String id) throws DataStoreException {
+        Category category = dataStore.read(Category.class, id);
         if (category != null) {
             category.setChildren(getChildren(id));
         }
         return category;
     }
 
-    public void deleteAll() {
-        categoryRepository.deleteAll();
+    public void deleteAll() throws DataStoreException {
+        dataStore.delete(Category.class);
     }
 
 }

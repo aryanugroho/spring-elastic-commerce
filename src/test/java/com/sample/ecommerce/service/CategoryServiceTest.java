@@ -7,7 +7,6 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.TestConfiguration;
 import com.sample.ecommerce.domain.Navigation;
-import com.sample.ecommerce.domain.Filter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.zols.datastore.query.Filter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TestConfiguration.class)

@@ -6,35 +6,31 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Term;
-import com.sample.ecommerce.repositories.TermRepository;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zols.datastore.DataStore;
+import org.zols.datastore.elasticsearch.ElasticSearchDataStore;
+import org.zols.datatore.exception.DataStoreException;
 
 @Service
 public class TermService {
 
-    @Autowired
-    private TermRepository termRepository;
+    private final DataStore dataStore;
+
+    public TermService() {
+        dataStore = new ElasticSearchDataStore("ecommerce");
+    }
 
     public List<Term> suggest(String keyword) {
-        return termRepository.suggest(keyword);
+        return null;
     }
 
-    public <S extends Term> Iterable<S> save(Iterable<S> itrbl) {
-        return termRepository.save(itrbl);
+    public <S extends Term> Iterable<Term> save(Iterable<Term> itrbl) throws DataStoreException {
+        return dataStore.create(Term.class, itrbl);
     }
 
-    public Term findOne(String id) {
-        return termRepository.findOne(id);
-    }
-
-    public void delete(String id) {
-        termRepository.delete(id);
-    }
-
-    public void deleteAll() {
-        termRepository.deleteAll();
+    public void deleteAll() throws DataStoreException {
+        dataStore.delete(Term.class);
     }
 
 }

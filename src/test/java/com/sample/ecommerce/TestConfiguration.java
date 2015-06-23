@@ -8,6 +8,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.zols.datatore.exception.DataStoreException;
 
 @SpringBootApplication
 @EnableBatchProcessing
@@ -23,7 +24,7 @@ public class TestConfiguration {
     private TermService termService;
 
     @PostConstruct
-    private void setup() {
+    private void setup() throws DataStoreException {
         productService.deleteAll();
         categoryService.deleteAll();
         termService.deleteAll();

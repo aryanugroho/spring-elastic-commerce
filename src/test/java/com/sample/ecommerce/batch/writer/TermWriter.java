@@ -20,7 +20,7 @@ public class TermWriter implements ItemWriter<Term> {
 
     @Override
     public void write(List<? extends Term> terms) throws Exception {
-        termService.save(terms);
+        termService.save((Iterable<Term>) terms);
     }
 
 }

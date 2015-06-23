@@ -6,11 +6,9 @@
 package com.sample.ecommerce.domain;
 
 import java.util.List;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.elasticsearch.annotations.Document;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
-@Document(indexName = "ecommerce", type = "categories")
 public class Category {
 
     @Id

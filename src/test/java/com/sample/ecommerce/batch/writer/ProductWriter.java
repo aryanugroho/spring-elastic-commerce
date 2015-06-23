@@ -20,7 +20,7 @@ public class ProductWriter implements ItemWriter<Product> {
 
     @Override
     public void write(List<? extends Product> products) throws Exception {
-        productService.save(products);
+        productService.save((Iterable<Product>) products);
     }
     
 }
