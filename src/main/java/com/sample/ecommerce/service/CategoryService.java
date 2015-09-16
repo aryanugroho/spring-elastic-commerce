@@ -7,39 +7,26 @@ package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.domain.Product;
-import com.sample.ecommerce.domain.ProductsList;
 import java.util.ArrayList;
 import java.util.List;
 import org.elasticsearch.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.zols.datastore.DataStore;
 import org.zols.datastore.elasticsearch.ElasticSearchDataStore;
 import org.zols.datastore.query.Filter;
 import static org.zols.datastore.query.Filter.Operator.EQUALS;
 import static org.zols.datastore.query.Filter.Operator.EXISTS_IN;
+import static org.zols.datastore.query.Filter.Operator.IS_NULL;
 import org.zols.datastore.query.Query;
 import org.zols.datatore.exception.DataStoreException;
 
 @Service
 public class CategoryService {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(CategoryService.class);
-
     private final DataStore dataStore;
 
     public CategoryService() {
         dataStore = new ElasticSearchDataStore("ecommerce");
-    }
-
-    public ProductsList listProducts(String categoryName, int pageNumber, int pageSize) {
-        return null;
-    }
-
-    public ProductsList listProducts(String categoryName, List<Filter> navigationFilters, int pageNumber, int pageSize) {
-        return null;
     }
 
     public List<Category> getParents(String categoryId) throws DataStoreException {
@@ -58,6 +45,18 @@ public class CategoryService {
         }
         return (parents.isEmpty()) ? null : Lists.reverse(parents);
     }
+    
+    public List<Category> getCategories() throws DataStoreException {
+        Query query = new Query();
+        query.addFilter(new Filter<>("parent", IS_NULL));
+        List<Category> children = dataStore.list(Category.class, query);
+        if (children != null) {
+            for (Category child : children) {
+                child.setChildren(getChildren(child.getId()));
+            }
+        }
+        return children.size() > 0 ? children : null;
+    }
 
     public List<Category> getChildren(String categoryId) throws DataStoreException {
         Query query = new Query();
@@ -71,7 +70,7 @@ public class CategoryService {
         return children.size() > 0 ? children : null;
     }
 
-    private String[] categoriesToLookForProducts(String categoryId) throws DataStoreException {
+    public String[] relatedCategories(String categoryId) throws DataStoreException {
         List<String> categoriesToLookFor = new ArrayList<>();
         wallThroughChildren(categoriesToLookFor, categoryId);
         return categoriesToLookFor.toArray(new String[categoriesToLookFor.size()]);
@@ -79,23 +78,33 @@ public class CategoryService {
 
     public List<Product> findByCategory(String categoryId) throws DataStoreException {
         Query query = new Query();
-        query.addFilter(new Filter<>("categories", EXISTS_IN, categoriesToLookForProducts(categoryId)));
+        query.addFilter(new Filter<>("categories", EXISTS_IN, relatedCategories(categoryId)));
         return dataStore.list(Product.class, query);
     }
 
     private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) throws DataStoreException {
         List<Category> children = getChildren(categoryId);
-        categoriesToLookFor.add(categoryId);
+
         if (children != null) {
             for (Category child : children) {
-                categoriesToLookFor.add(child.getId());
-                wallThroughChildren(categoriesToLookFor, child.getId());
+                if (!categoriesToLookFor.contains(child.getId())) {
+                    categoriesToLookFor.add(child.getId());
+                    wallThroughChildren(categoriesToLookFor, child.getId());
+                }
             }
+        } else {
+            if (!categoriesToLookFor.contains(categoryId)) {
+                categoriesToLookFor.add(categoryId);
+            }
+
         }
     }
 
     public <S extends Category> Iterable<Category> save(Iterable<Category> itrbl) throws DataStoreException {
-        return dataStore.create(Category.class, itrbl);
+        for (Category category : itrbl) {
+            dataStore.create(category);
+        }
+        return itrbl;
     }
 
     public Category findOne(String id) throws DataStoreException {

@@ -26,7 +26,10 @@ public class TermService {
     }
 
     public <S extends Term> Iterable<Term> save(Iterable<Term> itrbl) throws DataStoreException {
-        return dataStore.create(Term.class, itrbl);
+        for (Term term : itrbl) {
+            dataStore.create(term);
+        }
+        return itrbl;
     }
 
     public void deleteAll() throws DataStoreException {

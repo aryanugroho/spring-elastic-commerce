@@ -25,9 +25,10 @@ public class TestConfiguration {
 
     @PostConstruct
     private void setup() throws DataStoreException {
-        productService.deleteAll();
         categoryService.deleteAll();
-        termService.deleteAll();
+//        productService.deleteAll();
+//        
+//        termService.deleteAll();
     }
 
 }

@@ -21,7 +21,10 @@ public class ProductService {
     }
 
     public <S extends Product> Iterable<Product> save(Iterable<Product> itrbl) throws DataStoreException {
-        return dataStore.create(Product.class, itrbl);
+        for (Product product : itrbl) {
+            dataStore.create(product);
+        }
+        return itrbl;
     }
 
     public void deleteAll() throws DataStoreException {
