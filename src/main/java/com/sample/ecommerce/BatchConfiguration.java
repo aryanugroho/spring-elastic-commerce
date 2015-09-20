@@ -1,17 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.sample.ecommerce;
 
 import com.sample.ecommerce.service.CategoryService;
 import com.sample.ecommerce.service.ProductService;
 import com.sample.ecommerce.service.TermService;
 import javax.annotation.PostConstruct;
-
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
 
-
-@SpringBootApplication
-public class Application {
+@Configuration
+@EnableBatchProcessing
+public class BatchConfiguration {
 
     @Autowired
     private ProductService productService;
@@ -27,10 +31,6 @@ public class Application {
         productService.deleteAll();
         categoryService.deleteAll();
         termService.deleteAll();
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class);
     }
 
 }
