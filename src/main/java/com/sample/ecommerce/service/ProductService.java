@@ -6,33 +6,73 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Product;
+import com.sample.ecommerce.repositories.ProductRepository;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.FacetedPage;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
-import org.zols.datastore.DataStore;
-import org.zols.datastore.elasticsearch.ElasticSearchDataStore;
-import org.zols.datatore.exception.DataStoreException;
 
 @Service
 public class ProductService {
 
-    private final DataStore dataStore;
+    @Autowired
+    private ProductRepository productRepository;
 
-    public ProductService() {
-        dataStore = new ElasticSearchDataStore("ecommerce");
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+    public Aggregations list() {
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withIndices("ecommerce").withTypes("products")
+                .addAggregation(terms("brand").field("brand"))
+                .build();
+
+        return elasticsearchTemplate.query(searchQuery, new ResultsExtractor<Aggregations>() {
+            @Override
+            public Aggregations extract(SearchResponse response) {
+                System.out.println(response.toString());
+                return response.getAggregations();
+            }
+        });
     }
 
-    public <S extends Product> Iterable<Product> save(Iterable<Product> itrbl) throws DataStoreException {
-        for (Product product : itrbl) {
-            dataStore.create(product);
-        }
-        return itrbl;
+    public Iterable<Product> search(QueryBuilder qb) {
+        return productRepository.search(qb);
     }
 
-    public void deleteAll() throws DataStoreException {
-        dataStore.delete(Product.class);
+    public <S extends Product> S save(S s) {
+        return productRepository.save(s);
+    }
+
+    public <S extends Product> Iterable<S> save(Iterable<S> itrbl) {
+        return productRepository.save(itrbl);
+    }
+
+    public Product findOne(String id) {
+        return productRepository.findOne(id);
+    }
+
+    public Iterable<Product> findAll() {
+        return productRepository.findAll();
+    }
+
+    public void deleteAll() {
+        productRepository.deleteAll();
     }
 
     public Iterable<Product> searchByKeyword(String keyword) {
-        return null;
+        return search(QueryBuilders.queryString(keyword));
     }
 
 }

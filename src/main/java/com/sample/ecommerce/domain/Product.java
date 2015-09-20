@@ -6,8 +6,10 @@
 package com.sample.ecommerce.domain;
 
 import java.util.List;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
+@Document(indexName = "ecommerce", type = "products")
 public class Product {
 
     @Id
@@ -16,9 +18,6 @@ public class Product {
     private String brand;
     private String imageUrl;
     private List<String> categories;
-
-    //Specific to Some Categories
-    private String operatingSystem;
 
     public String getId() {
         return id;
@@ -58,14 +57,6 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public String getOperatingSystem() {
-        return operatingSystem;
-    }
-
-    public void setOperatingSystem(String operatingSystem) {
-        this.operatingSystem = operatingSystem;
     }
 
 }
