@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = "ecommerce", type = "products")
+@Document(indexName = "ecommerce", type = "product")
 public class Product {
 
     @Id

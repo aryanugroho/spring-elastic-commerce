@@ -40,7 +40,7 @@ public class ElasticsearchTemplateAggregationTests {
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(matchAllQuery())
                 .withSearchType(COUNT)
-                .withIndices("ecommerce").withTypes("products")
+                .withIndices("ecommerce").withTypes("product")
                 .addAggregation(terms("brand").field("brand"))
                 .build();
         // when

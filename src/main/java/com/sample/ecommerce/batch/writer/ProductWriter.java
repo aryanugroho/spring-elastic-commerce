@@ -11,16 +11,25 @@ import com.sample.ecommerce.domain.Product;
 import com.sample.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.zols.datastore.service.DataService;
+import static org.zols.datastore.util.JsonUtil.asMap;
 
 @Component
 public class ProductWriter implements ItemWriter<Product> {
-    
+
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private DataService dataService;
+
     @Override
     public void write(List<? extends Product> products) throws Exception {
-        productService.save(products);
+        //productService.save(products);
+
+        for (Product product : products) {
+            dataService.create("product", asMap(product));
+        }
     }
-    
+
 }

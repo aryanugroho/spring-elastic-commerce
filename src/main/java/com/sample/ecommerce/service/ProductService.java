@@ -34,7 +34,7 @@ public class ProductService {
 
     public Aggregations list() {
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withIndices("ecommerce").withTypes("products")
+                .withIndices("ecommerce").withTypes("product")
                 .addAggregation(terms("brand").field("brand"))
                 .build();
 

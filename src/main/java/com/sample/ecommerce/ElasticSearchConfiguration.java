@@ -15,6 +15,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 @Configuration
 public class ElasticSearchConfiguration {
 
+
     @Bean
     public ElasticsearchOperations elasticsearchTemplate() {
         return new ElasticsearchTemplate(client());
@@ -23,5 +24,6 @@ public class ElasticSearchConfiguration {
     @Bean
     public Client client() {
         return NodeBuilder.nodeBuilder().node().client();
+
     }
 }

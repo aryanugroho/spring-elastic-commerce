@@ -120,7 +120,7 @@
 
 
         <section>
-            <div class="container">
+            <div class="container" th:fragment="content">
                 <div class="row">
                     <ol class="breadcrumb">
                         <li th:if="${parents != null}" th:each="parent : ${parents}"><a href="#" th:href="@{'/categories/'+${parent.id}}" th:text="${parent.label}">Home</a></li>
@@ -284,7 +284,7 @@
                                     <div class="single-products">
                                         <div class="productinfo text-center">
                                             <a href="#">
-                                            <img src="images/shop/product12.jpg" th:src="@{${product.imageUrl}}" alt="" />
+                                                <img src="images/shop/product12.jpg" th:src="@{${product.imageUrl}}" alt="" />
                                             </a>
                                             <h2>$56</h2>
                                             <p th:text="${product.title}">Easy Polo Black Edition</p>                                            
@@ -595,7 +595,13 @@
                         </ul>
                     </div>
                 </div>
+                <script src="js/price-range.js" th:src="@{/js/price-range.js}"></script>
+                <script src="js/jquery.scrollUp.min.js" th:src="@{/js/jquery.scrollUp.min.js}"></script>
+                <script src="js/bootstrap3-typeahead.min.js" th:src="@{/js/bootstrap3-typeahead.min.js}"></script>
+                <script src="js/jquery.prettyPhoto.js" th:src="@{/js/jquery.prettyPhoto.js}"></script>
+                <script src="js/main.js" th:src="@{/js/main.js}"></script>
             </div>
+
         </section>
 
         <footer id="footer"><!--Footer-->
@@ -758,13 +764,7 @@
 
 
 
-        <script src="js/jquery.js" th:src="@{/js/jquery.js}"></script>
-        <script src="js/price-range.js" th:src="@{/js/price-range.js}"></script>
-        <script src="js/jquery.scrollUp.min.js" th:src="@{/js/jquery.scrollUp.min.js}"></script>
-        <script src="js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-        <script src="js/bootstrap3-typeahead.min.js" th:src="@{/js/bootstrap3-typeahead.min.js}"></script>
-        <script src="js/jquery.prettyPhoto.js" th:src="@{/js/jquery.prettyPhoto.js}"></script>
-        <script src="js/main.js" th:src="@{/js/main.js}"></script>
+
 
 
 

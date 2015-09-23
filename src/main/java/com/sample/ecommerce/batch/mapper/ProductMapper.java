@@ -22,7 +22,9 @@ public class ProductMapper implements FieldSetMapper<Product> {
         Product product = new Product();
         product.setId(fieldSet.readString(0));
         product.setTitle(fieldSet.readString(1));
-        product.setBrand(fieldSet.readString(2));
+        if(fieldSet.readString(2).trim().length() != 0) {
+            product.setBrand(fieldSet.readString(2));
+        }        
         String categoriesTxt = fieldSet.readString(3);
         if (categoriesTxt != null
                 && categoriesTxt.trim().length() != 0) {
