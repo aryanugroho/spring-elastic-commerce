@@ -8,6 +8,7 @@ package com.sample.ecommerce.batch.job;
 import com.sample.ecommerce.batch.mapper.ProductMapper;
 import com.sample.ecommerce.batch.writer.ProductWriter;
 import com.sample.ecommerce.domain.Product;
+import java.util.Map;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -31,15 +32,15 @@ public class ProductJob {
     @Bean
     public Job importProductsJob(JobBuilderFactory jobs,StepBuilderFactory stepBuilderFactory) {
         
-        FlatFileItemReader<Product> productreader = new FlatFileItemReader<>();
+        FlatFileItemReader<Map<String,Object>> productreader = new FlatFileItemReader<>();
         productreader.setResource(new ClassPathResource("data/products.csv"));
-        productreader.setLineMapper(new DefaultLineMapper<Product>() {{
+        productreader.setLineMapper(new DefaultLineMapper<Map<String,Object>>() {{
             setLineTokenizer(new DelimitedLineTokenizer());
             setFieldSetMapper(new ProductMapper());
         }});
         
         Step step1 = stepBuilderFactory.get("step1")
-                .<Product, Product> chunk(10)
+                .<Map<String,Object>, Map<String,Object>> chunk(10)
                 .reader(productreader)                
                 .writer(productWriter)
                 .build();

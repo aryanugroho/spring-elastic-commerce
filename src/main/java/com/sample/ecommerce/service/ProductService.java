@@ -13,12 +13,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.FacetedPage;
-import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
@@ -38,12 +33,9 @@ public class ProductService {
                 .addAggregation(terms("brand").field("brand"))
                 .build();
 
-        return elasticsearchTemplate.query(searchQuery, new ResultsExtractor<Aggregations>() {
-            @Override
-            public Aggregations extract(SearchResponse response) {
-                System.out.println(response.toString());
-                return response.getAggregations();
-            }
+        return elasticsearchTemplate.query(searchQuery, (SearchResponse response) -> {
+            System.out.println(response.toString());
+            return response.getAggregations();
         });
     }
 
