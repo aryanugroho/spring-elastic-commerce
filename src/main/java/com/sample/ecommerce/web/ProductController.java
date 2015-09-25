@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.zols.datatore.exception.DataStoreException;
 
 @Controller
 @RequestMapping("/products")
@@ -20,14 +21,14 @@ public class ProductController {
     @Autowired
     private ProductService productService;
     
-    @RequestMapping(value = "/search/{keyword}")
-    public String keywordSearch(Model model,@PathVariable("keyword") String keyword) {
-        model.addAttribute("products", productService.searchByKeyword(keyword));        
-        return "shop";
-    }
+//    @RequestMapping(value = "/search/{keyword}")
+//    public String keywordSearch(Model model,@PathVariable("keyword") String keyword) {
+//        model.addAttribute("products", productService.searchByKeyword(keyword));        
+//        return "shop";
+//    }
     
     @RequestMapping(value = "/{productId}", method = RequestMethod.GET)
-    public String get(Model model,@PathVariable("productId") String productId) {
+    public String get(Model model,@PathVariable("productId") String productId) throws DataStoreException {
         model.addAttribute("product", productService.findOne(productId));    
         return "product-details";
     }

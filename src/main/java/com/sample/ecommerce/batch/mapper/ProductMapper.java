@@ -5,7 +5,7 @@
  */
 package com.sample.ecommerce.batch.mapper;
 
-import com.sample.ecommerce.domain.Product;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

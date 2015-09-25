@@ -5,66 +5,48 @@
  */
 package com.sample.ecommerce.service;
 
-import com.sample.ecommerce.domain.Product;
-import com.sample.ecommerce.repositories.ProductRepository;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import static org.elasticsearch.search.aggregations.AggregationBuilders.terms;
-import org.elasticsearch.search.aggregations.Aggregations;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
+import org.zols.datastore.DataStore;
+import org.zols.datatore.exception.DataStoreException;
 
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ProductService.class);
 
     @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private DataStore dataStore;
+    public Map<String, Object> save(Map<String, Object> product) throws DataStoreException {
+        return dataStore.create(product);
+    }
 
-    public Aggregations list() {
-        SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withIndices("ecommerce").withTypes("product")
-                .addAggregation(terms("brand").field("brand"))
-                .build();
-
-        return elasticsearchTemplate.query(searchQuery, (SearchResponse response) -> {
-            System.out.println(response.toString());
-            return response.getAggregations();
+    public <S extends Map<String, Object>> Iterable<Map<String, Object>> save(Iterable<Map<String, Object>> itrbl) throws DataStoreException {
+        itrbl.forEach(product -> {
+            try {
+                dataStore.create(product);
+            } catch (DataStoreException ex) {
+                LOGGER.error("Unable to crete Product", ex);
+            }
         });
+        return null;
     }
 
-    public Iterable<Product> search(QueryBuilder qb) {
-        return productRepository.search(qb);
+    public void deleteAll() throws DataStoreException {
+        dataStore.delete("product");
     }
 
-    public <S extends Product> S save(S s) {
-        return productRepository.save(s);
+    public Map<String, Object> findOne(String id) throws DataStoreException {
+        return dataStore.read("product", id);
     }
 
-    public <S extends Product> Iterable<S> save(Iterable<S> itrbl) {
-        return productRepository.save(itrbl);
-    }
-
-    public Product findOne(String id) {
-        return productRepository.findOne(id);
-    }
-
-    public Iterable<Product> findAll() {
-        return productRepository.findAll();
-    }
-
-    public void deleteAll() {
-        productRepository.deleteAll();
-    }
-
-    public Iterable<Product> searchByKeyword(String keyword) {
-        return search(QueryBuilders.queryString(keyword));
+    public List<Map<String, Object>> findAll() throws DataStoreException {
+        return dataStore.list("product");
     }
 
 }

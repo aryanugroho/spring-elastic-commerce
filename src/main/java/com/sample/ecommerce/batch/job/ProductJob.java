@@ -7,7 +7,6 @@ package com.sample.ecommerce.batch.job;
 
 import com.sample.ecommerce.batch.mapper.ProductMapper;
 import com.sample.ecommerce.batch.writer.ProductWriter;
-import com.sample.ecommerce.domain.Product;
 import java.util.Map;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

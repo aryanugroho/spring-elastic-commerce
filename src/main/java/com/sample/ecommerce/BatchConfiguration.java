@@ -41,16 +41,18 @@ public class BatchConfiguration {
     private SchemaService schemaService;
 
     @PostConstruct
-    private void setup() {
-        productService.deleteAll();
-        categoryService.deleteAll();
-        termService.deleteAll();
+    private void setup() throws DataStoreException {
 
         try {
             uploadSchema();
         } catch (URISyntaxException | IOException | DataStoreException ex) {
             Logger.getLogger(BatchConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        productService.deleteAll();
+        categoryService.deleteAll();
+        termService.deleteAll();
+
     }
 
     private void uploadSchema() throws URISyntaxException, IOException, DataStoreException {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RestController;
+import org.zols.datatore.exception.DataStoreException;
 
 @RestController
 @RequestMapping(value = "/api/terms")
@@ -26,7 +27,7 @@ public class TermAPIController {
     private TermService termService;
 
     @RequestMapping(method = GET)
-    public Iterable<Term> list() {
+    public Iterable<Term> list() throws DataStoreException {
         LOGGER.info("Getting terms ");
         return termService.findAll();
     }
@@ -34,7 +35,7 @@ public class TermAPIController {
     @RequestMapping(value = "/suggest/{keyword}")
     public List<Term> suggest(@PathVariable("keyword") String keyword) {
         LOGGER.info("Getting terms ");
-        return termService.findByKeyword(keyword);
+        return termService.suggest(keyword);
     }
 
 }

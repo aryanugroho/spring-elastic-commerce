@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.zols.datatore.exception.DataStoreException;
 
 @Controller
 @RequestMapping("/categories")
@@ -20,7 +21,7 @@ public class CategoryController {
     private CategoryService categoryService;
     
     @RequestMapping(value = "/{categoryId}")
-    public String browseByCategory(Model model,@PathVariable("categoryId") String categoryId) {
+    public String browseByCategory(Model model,@PathVariable("categoryId") String categoryId) throws DataStoreException {
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
         model.addAttribute("products", categoryService.findByCategory(categoryId));    
