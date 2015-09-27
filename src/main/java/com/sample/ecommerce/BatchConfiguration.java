@@ -8,11 +8,9 @@ package com.sample.ecommerce;
 import com.sample.ecommerce.service.CategoryService;
 import com.sample.ecommerce.service.ProductService;
 import com.sample.ecommerce.service.TermService;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +18,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.zols.datastore.jsonschema.JSONSchema;
 import org.zols.datastore.service.SchemaService;
 import static org.zols.datastore.util.JsonUtil.asMap;
 import org.zols.datatore.exception.DataStoreException;
@@ -55,17 +54,26 @@ public class BatchConfiguration {
 
     }
 
+    private static String getContentFromClasspath(String resourcePath) {
+        InputStream inputStream = JSONSchema.class.getResourceAsStream(resourcePath);
+        java.util.Scanner scanner = new java.util.Scanner(inputStream, "UTF-8").useDelimiter("\\A");
+        String theString = scanner.hasNext() ? scanner.next() : "";
+        scanner.close();
+        return theString;
+    }
+
     private void uploadSchema() throws URISyntaxException, IOException, DataStoreException {
-        File[] scripts = new File("src/main/resources/schema")
-                .listFiles();
-        String schemaId;
-        Map<String, Object> schema;
-        for (File scriptFile : scripts) {
-            schemaId = scriptFile.getName().substring(0, scriptFile.getName().indexOf("."));
-            schemaService.delete(schemaId);
-            schema = asMap(new String(Files.readAllBytes(scriptFile.toPath())));
-            schemaService.create(schema);
-        }
+        Map<String, Object> map = asMap(getContentFromClasspath("/schema.json"));
+        map.forEach((k, v) -> {
+            try {
+                schemaService.delete(k);
+                ((Map) v).put("id", k);
+                schemaService.create(((Map) v));
+            } catch (DataStoreException ex) {
+                Logger.getLogger(BatchConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
     }
 
 }

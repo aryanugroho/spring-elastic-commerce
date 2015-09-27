@@ -1,0 +1,30 @@
+{
+    "product": {
+        "type": "object",
+        "title": "Product",
+        "idField": "id",
+        "labelField": "title",
+        "properties": {
+            "imageUrl": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "categories": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "title": {
+                "type": "string"
+            },
+            "brand": {
+                "type": "string"
+            }
+        },
+        "required": ["title", "brand", "categories", "imageUrl"]
+    }
+
+}
