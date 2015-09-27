@@ -57,5 +57,11 @@ public class ProductAPIController {
         LOGGER.info("Getting products ");
         return productService.findAll();
     }
+    
+    @RequestMapping(value = "/search/{keyword}", method = GET)
+    public Map<String, Object> keywordSearch(@PathVariable(value = "keyword") String keyword) throws DataStoreException {
+        LOGGER.info("Searching products for keyword {}",keyword);
+        return productService.keywordSearch(keyword);
+    }
 
 }

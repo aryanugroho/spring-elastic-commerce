@@ -1,14 +1,17 @@
 package com.sample.ecommerce.test;
 
 import com.sample.ecommerce.BatchConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
+import java.io.InputStream;
 
-@SpringBootApplication
-@Import(value = {BatchConfiguration.class})
-@ComponentScan(basePackages = {"com.sample.ecommerce.repositories","com.sample.ecommerce.service"})
 public class TestConfiguration {
 
-    
+
+    public static String getContentFromClasspath(String resourcePath) {
+        InputStream inputStream = BatchConfiguration.class.getResourceAsStream(resourcePath);
+        java.util.Scanner scanner = new java.util.Scanner(inputStream, "UTF-8").useDelimiter("\\A");
+        String theString = scanner.hasNext() ? scanner.next() : "";
+        scanner.close();
+        return theString;
+    }
+
 }

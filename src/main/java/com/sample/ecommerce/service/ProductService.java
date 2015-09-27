@@ -22,6 +22,8 @@ public class ProductService {
 
     @Autowired
     private DataStore dataStore;
+
+    
     public Map<String, Object> save(Map<String, Object> product) throws DataStoreException {
         return dataStore.create(product);
     }
@@ -47,6 +49,11 @@ public class ProductService {
 
     public List<Map<String, Object>> findAll() throws DataStoreException {
         return dataStore.list("product");
+    }
+    
+    public Map<String, Object> keywordSearch(String keyword) throws DataStoreException {
+        
+        return null;
     }
 
 }

@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.zols.datastore.jsonschema.JSONSchema;
 import org.zols.datastore.service.SchemaService;
 import static org.zols.datastore.util.JsonUtil.asMap;
 import org.zols.datatore.exception.DataStoreException;
@@ -55,7 +54,7 @@ public class BatchConfiguration {
     }
 
     private static String getContentFromClasspath(String resourcePath) {
-        InputStream inputStream = JSONSchema.class.getResourceAsStream(resourcePath);
+        InputStream inputStream = BatchConfiguration.class.getResourceAsStream(resourcePath);
         java.util.Scanner scanner = new java.util.Scanner(inputStream, "UTF-8").useDelimiter("\\A");
         String theString = scanner.hasNext() ? scanner.next() : "";
         scanner.close();
