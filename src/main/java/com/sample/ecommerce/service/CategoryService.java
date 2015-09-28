@@ -8,7 +8,9 @@ package com.sample.ecommerce.service;
 import com.google.common.collect.Lists;
 import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.domain.ProductsList;
+import com.sample.ecommerce.util.ElasticSearchUtil;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -32,13 +34,8 @@ public class CategoryService {
     @Autowired
     private DataStore dataStore;
 
-    public ProductsList listProducts(String categoryName, int pageNumber, int pageSize) {
-        return null;
-    }
-
-    public ProductsList listProducts(String categoryName, List<Filter> navigationFilters, int pageNumber, int pageSize) {
-        return null;
-    }
+    @Autowired
+    private ElasticSearchUtil elasticSearchUtil;
 
     public List<Category> getParents(String categoryId) throws DataStoreException {
         List<Category> parents = new ArrayList<>();
@@ -76,9 +73,9 @@ public class CategoryService {
     }
 
     public List<Map<String, Object>> findByCategory(String categoryId) throws DataStoreException {
-        Query query = new Query();
-        query.addFilter(new Filter<>("categories", EXISTS_IN, categoriesToLookForProducts(categoryId)));
-        return dataStore.list("product", query);
+        Map<String,Object> browseQuery = new HashMap<>();
+        browseQuery.put("categories", categoriesToLookForProducts(categoryId));
+        return elasticSearchUtil.search("product", "browse_products", browseQuery);
     }
 
     private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) throws DataStoreException {
@@ -91,12 +88,12 @@ public class CategoryService {
             }
         }
     }
-    
-    public Category save(Category category) throws DataStoreException  {
+
+    public Category save(Category category) throws DataStoreException {
         return dataStore.create(category);
     }
 
-    public <S extends Category> List<Category> save(List<? extends Category> itrbl)  {
+    public <S extends Category> List<Category> save(List<? extends Category> itrbl) {
         itrbl.forEach(category -> {
             try {
                 dataStore.create(category);

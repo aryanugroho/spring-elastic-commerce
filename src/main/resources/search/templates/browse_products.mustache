@@ -1,0 +1,11 @@
+{
+    "query": {
+      "terms": {
+        "categories": [
+          "{{#categories}}",
+          "{{.}}",
+          "{{/categories}}"
+        ]
+      }
+    }
+  }
