@@ -24,7 +24,7 @@ public class CategoryController {
     public String browseByCategory(Model model,@PathVariable("categoryId") String categoryId) throws DataStoreException {
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
-        model.addAttribute("products", categoryService.findByCategory(categoryId));    
+        model.addAttribute("aggregations", categoryService.findByCategory(categoryId));    
         return "shop";
     }
 

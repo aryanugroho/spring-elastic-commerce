@@ -5,18 +5,13 @@
  */
 package com.sample.ecommerce.domain;
 
-import java.util.List;
-
 /**
  *
- * @author WZ07
- * @param <T>
  */
-public class Navigation<T extends NavigationItem> {
+public abstract class BucketItem {
 
     private String name;
-
-    private List<T> items;
+    private Integer count;
 
     public String getName() {
         return name;
@@ -26,18 +21,15 @@ public class Navigation<T extends NavigationItem> {
         this.name = name;
     }
 
-    public List<T> getItems() {
-        return items;
+    public Integer getCount() {
+        return count;
     }
 
-    public void setItems(List<T> items) {
-        this.items = items;
+    public void setCount(Integer count) {
+        this.count = count;
     }
-
-    @Override
-    public String toString() {
-        return "Navigation{" + "name=" + name + ", items=" + items + '}';
-    }
+    
+    
 
     
 }

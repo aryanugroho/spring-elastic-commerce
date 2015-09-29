@@ -7,9 +7,9 @@ package com.sample.ecommerce.domain;
 
 /**
  *
- * @author WZ07
+ * 
  */
-public class TextItem extends NavigationItem {
+public class TextItem extends BucketItem {
 
     private String label;
 

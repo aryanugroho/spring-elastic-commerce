@@ -9,6 +9,10 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.sample.ecommerce.BatchConfiguration;
+import com.sample.ecommerce.domain.AggregatedResults;
+import com.sample.ecommerce.domain.Bucket;
+import com.sample.ecommerce.domain.BucketItem;
+import com.sample.ecommerce.domain.TextItem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -36,16 +40,59 @@ public class ElasticSearchUtil {
     @Autowired
     private Client client;
 
-    public List<Map<String, Object>> search(String type, String template, Object model) {
-        List<Map<String, Object>> list = null;
+    public AggregatedResults aggregatedSearch(String type, String template, Object model) {
+        AggregatedResults aggregatedResults = new AggregatedResults();
         Map<String, Object> searchResponse = searchResponse(type, template, model);
+        aggregatedResults.setItems(resultsOf(searchResponse));
+        aggregatedResults.setBuckets(bucketsOf(searchResponse));
+        return aggregatedResults;
+    }
+
+    public List<Map<String, Object>> search(String type, String template, Object model) {
+        return resultsOf(searchResponse(type, template, model));
+    }
+
+    private List<Bucket> bucketsOf(Map<String, Object> searchResponse) {
+        List<Bucket> buckets = null;
+        if (searchResponse != null) {
+            Map<String, Object> aggregations = (Map<String, Object>) searchResponse.get("aggregations");
+            if (aggregations != null) {
+                Bucket bucket;
+                BucketItem bucketItem;
+                List<BucketItem> bucketItems;
+                List<Map<String, Object>> bucketsMaps;
+
+                buckets = new ArrayList<>();
+                for (Map.Entry<String, Object> entrySet : aggregations.entrySet()) {
+                    bucket = new Bucket();
+                    bucket.setName(entrySet.getKey());
+                    bucketsMaps = (List<Map<String, Object>>) ((Map<String, Object>) entrySet.getValue()).get("buckets");
+
+                    bucketItems = new ArrayList<>();
+                    for (Map<String, Object> bucketsMap : bucketsMaps) {
+                        bucketItem = new TextItem();
+                        bucketItem.setName(bucketsMap.get("key").toString());
+                        bucketItem.setCount((Integer) bucketsMap.get("doc_count"));
+                        bucketItems.add(bucketItem);
+                    }
+                    bucket.setItems(bucketItems);
+                    buckets.add(bucket);
+                }
+
+            }
+        }
+        return buckets;
+    }
+
+    private List<Map<String, Object>> resultsOf(Map<String, Object> searchResponse) {
+        List<Map<String, Object>> list = null;
         if (searchResponse != null) {
             Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
-            if (noOfRecords > 0) {
+            if (0 != noOfRecords) {
                 List<Map<String, Object>> recordsMapList = (List<Map<String, Object>>) ((Map<String, Object>) searchResponse.get("hits")).get("hits");
                 list = new ArrayList<>(recordsMapList.size());
                 for (Map<String, Object> recordsMapList1 : recordsMapList) {
-                   list.add((Map<String, Object>) recordsMapList1.get("_source"));
+                    list.add((Map<String, Object>) recordsMapList1.get("_source"));
                 }
             }
         }

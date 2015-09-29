@@ -6,6 +6,7 @@
 package com.sample.ecommerce.util;
 
 import com.sample.ecommerce.Application;
+import com.sample.ecommerce.domain.AggregatedResults;
 import static com.sample.ecommerce.util.ElasticSearchUtil.getContentFromClasspath;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class ElasticSearchUtilTest {
         categoriesToLookFor.add("laptops");
         Map<String,Object> browseQuery = new HashMap<>();
         browseQuery.put("categories", categoriesToLookFor);
-        List<Map<String, Object>> response = elasticSearchUtil.search( "product", "browse_products",browseQuery);
+        AggregatedResults response = elasticSearchUtil.aggregatedSearch( "product", "browse_products",browseQuery);
         Assert.assertNotNull(response);
     }
 

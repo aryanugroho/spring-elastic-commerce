@@ -7,7 +7,7 @@ package com.sample.ecommerce.service;
 
 import com.google.common.collect.Lists;
 import com.sample.ecommerce.domain.Category;
-import com.sample.ecommerce.domain.ProductsList;
+import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.util.ElasticSearchUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,10 +72,10 @@ public class CategoryService {
         return categoriesToLookFor;
     }
 
-    public List<Map<String, Object>> findByCategory(String categoryId) throws DataStoreException {
+    public AggregatedResults findByCategory(String categoryId) throws DataStoreException {
         Map<String,Object> browseQuery = new HashMap<>();
         browseQuery.put("categories", categoriesToLookForProducts(categoryId));
-        return elasticSearchUtil.search("product", "browse_products", browseQuery);
+        return elasticSearchUtil.aggregatedSearch("product", "browse_products", browseQuery);
     }
 
     private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) throws DataStoreException {
