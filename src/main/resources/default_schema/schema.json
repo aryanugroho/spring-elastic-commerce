@@ -1,0 +1,80 @@
+{
+    "term": {
+        "type": "object",
+        "title": "Term",
+        "idField": "term",
+        "labelField": "term",
+        "properties": {
+            "term": {
+                "type": "string"
+            },
+            "visits": {
+                "type": "integer"
+            },
+            "products": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "required": ["term"]
+    },
+    "category": {
+        "type": "object",
+        "title": "Category",
+        "idField": "id",
+        "labelField": "label",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "label": {
+                "type": "string"
+            },
+            "parent": {
+                "type": "string"
+            }
+        },
+        "required": ["label"]
+    },
+    "product": {
+        "type": "object",
+        "title": "Product",
+        "idField": "id",
+        "labelField": "title",
+        "properties": {
+            "imageUrl": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "categories": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "title": {
+                "type": "string"
+            },
+            "brand": {
+                "type": "string"
+            }
+        },
+        "required": ["title", "brand", "categories", "imageUrl"]
+    },
+    "mobile": {        
+        "$ref": "product",
+        "title": "Mobile",
+        "type": "object",
+        "properties": {
+            "operatingSystem": {
+                "type": "string"
+            }
+        },
+        "required": ["operatingSystem"]
+    }
+
+}

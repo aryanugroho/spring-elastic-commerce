@@ -24,7 +24,15 @@ public class CategoryController {
     public String browseByCategory(Model model,@PathVariable("categoryId") String categoryId) throws DataStoreException {
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
-        model.addAttribute("aggregations", categoryService.findByCategory(categoryId));    
+        model.addAttribute("aggregations", categoryService.findByCategory(categoryId,null));    
+        return "shop";
+    }
+    
+    @RequestMapping(value = "/{categoryId}/{keyword}")
+    public String browseByCategoryWithKeyword(Model model,@PathVariable("categoryId") String categoryId,@PathVariable("keyword") String keyword) throws DataStoreException {
+        model.addAttribute("category", categoryService.findOne(categoryId));
+        model.addAttribute("parents", categoryService.getParents(categoryId));
+        model.addAttribute("aggregations", categoryService.findByCategory(categoryId,keyword));    
         return "shop";
     }
 

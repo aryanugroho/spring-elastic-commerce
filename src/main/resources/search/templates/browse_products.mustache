@@ -1,18 +1,18 @@
-{
-"aggregations": {
-    "brand": {
-      "terms": {
-        "field": "brand"
+    {
+    "aggregations": {
+        "brand": {
+          "terms": {
+            "field": "brand"
+          }
+        }
+      },
+        "query": {
+          "terms": {
+            "categories": [
+              "{{#categories}}",
+              "{{.}}",
+              "{{/categories}}"
+            ]
+          }
+        }
       }
-    }
-  },
-    "query": {
-      "terms": {
-        "categories": [
-          "{{#categories}}",
-          "{{.}}",
-          "{{/categories}}"
-        ]
-      }
-    }
-  }

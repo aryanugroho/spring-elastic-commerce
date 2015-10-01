@@ -1,0 +1,40 @@
+[
+    {
+        "id": "computer",
+        "label": "Computers",
+        "parent": "electronics"
+
+    }, {
+        "id": "mobiles",
+        "label": "Mobiles",
+        "parent": "electronics"
+
+    }, {
+        "id": "tablets",
+        "label": "Tablets",
+        "parent": "electronics"
+    }, {
+        "id": "laptops",
+        "label": "Laptops",
+        "parent": "computer"
+    }, {
+        "id": "desktop",
+        "label": "Desktop",
+        "parent": "computer"
+    }, {
+        "id": "tv",
+        "label": "TV",
+        "parent": "electronics"
+    }, {
+        "id": "lcdtv",
+        "label": "LCD TV",
+        "parent": "tv"
+    }, {
+        "id": "ledtv",
+        "label": "LED TV",
+        "parent": "tv"
+    }, {
+        "id": "electronics",
+        "label": "Electronics"
+    }
+]

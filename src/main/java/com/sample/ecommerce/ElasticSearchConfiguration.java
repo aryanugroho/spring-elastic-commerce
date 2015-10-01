@@ -12,10 +12,6 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- *
- * @author sathish
- */
 @Configuration
 public class ElasticSearchConfiguration {
 
@@ -27,5 +23,4 @@ public class ElasticSearchConfiguration {
                 .put("index.number_of_replicas", 0).build();
         return nodeBuilder().settings(settings).local(true).build().start().client();
     }
-
 }

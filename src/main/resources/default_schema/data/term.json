@@ -1,0 +1,15 @@
+[
+    {
+        "term": "ipod",
+        "visits": 20,
+        "products": ["iPhone"]
+    }, {
+        "term": "apple",
+        "visits": 10,
+        "products": ["iPhone", "iAir", "iMac", "iWatch"]
+    }, {
+        "term": "iWatch",
+        "visits": 50,
+        "products": ["iWatch"]
+    }
+]

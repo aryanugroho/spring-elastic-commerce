@@ -1,0 +1,9 @@
+[
+    {
+        "imageUrl": "/images/shop/iphone.png",
+        "id": "1",
+        "categories": ["mobiles"],
+        "title": "iPhone",
+        "brand": "Apple"
+    }
+]

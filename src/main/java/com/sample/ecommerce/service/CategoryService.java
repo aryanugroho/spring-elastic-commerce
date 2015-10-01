@@ -18,10 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zols.datastore.DataStore;
-import org.zols.datastore.elasticsearch.ElasticSearchDataStore;
 import org.zols.datastore.query.Filter;
 import static org.zols.datastore.query.Filter.Operator.EQUALS;
-import static org.zols.datastore.query.Filter.Operator.EXISTS_IN;
 import org.zols.datastore.query.Query;
 import org.zols.datatore.exception.DataStoreException;
 
@@ -72,10 +70,13 @@ public class CategoryService {
         return categoriesToLookFor;
     }
 
-    public AggregatedResults findByCategory(String categoryId) throws DataStoreException {
+    public AggregatedResults findByCategory(String categoryId,String keyword) throws DataStoreException {
         Map<String,Object> browseQuery = new HashMap<>();
         browseQuery.put("categories", categoriesToLookForProducts(categoryId));
-        return elasticSearchUtil.aggregatedSearch("product", "browse_products", browseQuery);
+        browseQuery.put("keyword", keyword);
+        return elasticSearchUtil.aggregatedSearch("product", 
+                (keyword ==null) ? "browse_products" : "browse_products_with_keyword", 
+                browseQuery);
     }
 
     private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) throws DataStoreException {

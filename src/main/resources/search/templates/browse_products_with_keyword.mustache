@@ -1,0 +1,21 @@
+{  
+   "query":{  
+      "bool":{  
+         "must":{  
+            "terms":{  
+               "categories": [
+                    "{{#categories}}",
+                    "{{.}}",
+                    "{{/categories}}"
+                  ]
+            }
+         },
+         "must":{  
+            "query_string":{  
+               "default_field":"title",
+               "query":"{{keyword}}"
+            }
+         }
+      }
+   }
+}

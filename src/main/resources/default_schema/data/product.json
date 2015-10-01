@@ -1,0 +1,49 @@
+[{
+        "imageUrl": "/images/shop/galaxynote.png",
+        "id": "4",
+        "categories": ["tablets"],
+        "title": "Galaxy Note",
+        "brand": "Samsung"
+    }, {
+        "imageUrl": "/images/shop/lenovomixx.png",
+        "id": "9",
+        "categories": ["laptops", "tablets"],
+        "title": "Mixx 3",
+        "brand": "Lenovo"
+    }, {
+        "imageUrl": "/images/shop/nexus.png",
+        "id": "5",
+        "categories": ["tablets"],
+        "title": "Nexus",
+        "brand": "Google"
+    },  {
+        "imageUrl": "/images/shop/panasonicviera.png",
+        "id": "6",
+        "categories": ["lcdtv"],
+        "title": "Viera",
+        "brand": "Panasonic"
+    }, {
+        "imageUrl": "/images/shop/imac.png",
+        "id": "2",
+        "categories": ["desktop"],
+        "title": "iMac",
+        "brand": "Apple"
+    }, {
+        "imageUrl": "/images/shop/sonybravia.png",
+        "id": "7",
+        "categories": ["ledtv"],
+        "title": "Bravia",
+        "brand": "Sony"
+    }, {
+        "imageUrl": "/images/shop/iair.png",
+        "id": "3",
+        "categories": ["laptops"],
+        "title": "iAir",
+        "brand": "Apple"
+    }, {
+        "imageUrl": "/images/shop/sonyvaio.png",
+        "id": "8",
+        "categories": ["laptops"],
+        "title": "VAIO",
+        "brand": "Sony"
+    }]

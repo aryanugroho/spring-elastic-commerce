@@ -6,19 +6,20 @@
 package com.sample.ecommerce.domain;
 
 import java.util.List;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+@Entity(name = "category")
 public class Category {
 
     @Id
     private String id;
     private String label;
     private String parent;
-    
+
     @Transient
-    private List<Category> children;  
-    
+    private List<Category> children;
 
     public String getId() {
         return id;
@@ -51,5 +52,5 @@ public class Category {
     public void setChildren(List<Category> children) {
         this.children = children;
     }
-   
+
 }
