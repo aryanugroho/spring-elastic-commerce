@@ -5,6 +5,7 @@
  */
 package com.sample.ecommerce.web;
 
+import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.service.ProductService;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -59,9 +60,9 @@ public class ProductAPIController {
     }
     
     @RequestMapping(value = "/search/{keyword}", method = GET)
-    public Map<String, Object> keywordSearch(@PathVariable(value = "keyword") String keyword) throws DataStoreException {
+    public AggregatedResults keywordSearch(@PathVariable(value = "keyword") String keyword) throws DataStoreException {
         LOGGER.info("Searching products for keyword {}",keyword);
-        return productService.keywordSearch(keyword);
+        return productService.search(keyword);
     }
 
 }

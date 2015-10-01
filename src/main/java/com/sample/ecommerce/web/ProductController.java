@@ -32,4 +32,10 @@ public class ProductController {
         model.addAttribute("product", productService.findOne(productId));    
         return "product-details";
     }
+    
+    @RequestMapping(value = "/search/{keyword}", method = RequestMethod.GET)
+    public String search(Model model,@PathVariable("keyword") String keyword) throws DataStoreException {
+        model.addAttribute("aggregations", productService.search(keyword));    
+        return "shop";
+    }
 }

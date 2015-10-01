@@ -1,0 +1,20 @@
+{  
+"aggregations": {
+        
+"brand": {
+          "terms": {
+            "field": "brand"
+          }
+        },"browse": {
+          "terms": {
+            "field": "categories"
+          }
+        }
+      },
+   "query":{  
+      "query_string":{  
+               "default_field":"title",
+               "query":"{{keyword}}"
+            }
+   }
+}

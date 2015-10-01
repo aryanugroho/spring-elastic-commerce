@@ -127,13 +127,13 @@
                         <!--/*-->
                         <li><a href="#">Library</a></li>
                         <!--*/-->
-                        <li class="active" th:text="${category.label}">Data</li>
+                        <li class="active" th:if="${category != null}" th:text="${category.label}">Data</li>
                     </ol>   
 
                     <div class="col-sm-3">
                         <div class="left-sidebar">
-                            <h2 th:if="${category.children != null}" >Browse</h2>
-                            <div th:if="${category.children != null}" class="panel-group category-products" id="accordian"><!--category-productsr-->
+                            <h2 th:if="${category != null}" >Browse</h2>
+                            <div th:if="${category?.children}" class="panel-group category-products" id="accordian"><!--category-productsr-->
                                 <div th:each="child : ${category.children}" class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">

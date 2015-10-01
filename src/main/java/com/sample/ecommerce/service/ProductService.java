@@ -5,6 +5,9 @@
  */
 package com.sample.ecommerce.service;
 
+import com.sample.ecommerce.domain.AggregatedResults;
+import com.sample.ecommerce.util.ElasticSearchUtil;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -23,7 +26,9 @@ public class ProductService {
     @Autowired
     private DataStore dataStore;
 
-    
+    @Autowired
+    private ElasticSearchUtil elasticSearchUtil;
+
     public Map<String, Object> save(Map<String, Object> product) throws DataStoreException {
         return dataStore.create(product);
     }
@@ -50,10 +55,13 @@ public class ProductService {
     public List<Map<String, Object>> findAll() throws DataStoreException {
         return dataStore.list("product");
     }
-    
-    public Map<String, Object> keywordSearch(String keyword) throws DataStoreException {
-        
-        return null;
+
+    public AggregatedResults search(String keyword) throws DataStoreException {
+        Map<String, Object> browseQuery = new HashMap<>();
+        browseQuery.put("keyword", keyword);
+        return elasticSearchUtil.aggregatedSearch("product",
+                "search_products_with_keyword",
+                browseQuery);
     }
 
 }
