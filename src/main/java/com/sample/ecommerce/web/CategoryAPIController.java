@@ -11,14 +11,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.zols.datatore.exception.DataStoreException;
 
@@ -30,12 +25,6 @@ public class CategoryAPIController {
 
     @Autowired
     private CategoryService categoryService;
-
-    @RequestMapping(method = POST)
-    public Category create(@RequestBody Category category) throws DataStoreException {
-        LOGGER.info("Creating new category {}", category);
-        return categoryService.save(category);
-    }
 
     @RequestMapping(value = "/{id}", method = GET)
     public Category read(@PathVariable(value = "id") String id) throws DataStoreException {
@@ -55,20 +44,5 @@ public class CategoryAPIController {
         return categoryService.getChildren(id);
     }
 
-    @RequestMapping(value = "/{id}", method = PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@PathVariable(value = "id") String id,
-            @RequestBody Category category) throws DataStoreException {
-        if (id.equals(category.getId())) {
-            LOGGER.info("Updating category with id {} ", id);
-            categoryService.save(category);
-        }
-    }
-
-//    @RequestMapping(method = GET)
-//    public Iterable<Category> list() {
-//        LOGGER.info("Getting categories ");
-//        return categoryService.l
-//    }
 
 }

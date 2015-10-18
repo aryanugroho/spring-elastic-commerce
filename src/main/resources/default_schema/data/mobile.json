@@ -4,6 +4,7 @@
         "id": "1",
         "categories": ["mobiles"],
         "title": "iPhone",
+        "categoriesMap": ["electronics_mobiles"],
         "brand": "Apple"
     }
 ]

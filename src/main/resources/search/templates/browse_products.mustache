@@ -1,18 +1,16 @@
-    {
+{
+    "size":{{size}}{{^size}}10{{/size}},
+    {{#from}}"from":{{from}},{{/from}}
     "aggregations": {
         "brand": {
-          "terms": {
-            "field": "brand"
-          }
+            "terms": {
+                "field": "brand"
+            }
         }
-      },
-        "query": {
-          "terms": {
-            "categories": [
-              "{{#categories}}",
-              "{{.}}",
-              "{{/categories}}"
-            ]
-          }
+    },
+    "query": {
+        "prefix": {
+            "categoriesMap": "{{categoriesMap}}"
         }
-      }
+    }
+}

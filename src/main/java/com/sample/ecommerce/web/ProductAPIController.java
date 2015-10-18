@@ -31,34 +31,13 @@ public class ProductAPIController {
     @Autowired
     private ProductService productService;
 
-    @RequestMapping(method = POST)
-    public Map<String, Object> create(@RequestBody Map<String, Object> product) throws DataStoreException {
-        LOGGER.info("Creating new product {}", product);
-        return productService.save(product);
-    }
-
     @RequestMapping(value = "/{id}", method = GET)
     public Map<String, Object> read(@PathVariable(value = "id") String id) throws DataStoreException {
         LOGGER.info("Getting product {}", id);
         return productService.findOne(id);
     }
 
-    @RequestMapping(value = "/{id}", method = PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@PathVariable(value = "id") String id,
-            @RequestBody Map<String, Object> product) throws DataStoreException {
 
-        LOGGER.info("Updating product with id {} ", id);
-        productService.save(product);
-
-    }
-
-    @RequestMapping(method = GET)
-    public Iterable<Map<String, Object>> list() throws DataStoreException {
-        LOGGER.info("Getting products ");
-        return productService.findAll();
-    }
-    
     @RequestMapping(value = "/search/{keyword}", method = GET)
     public AggregatedResults keywordSearch(@PathVariable(value = "keyword") String keyword) throws DataStoreException {
         LOGGER.info("Searching products for keyword {}",keyword);

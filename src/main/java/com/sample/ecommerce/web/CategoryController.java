@@ -9,6 +9,7 @@ import com.sample.ecommerce.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zols.datatore.exception.DataStoreException;
@@ -16,28 +17,29 @@ import org.zols.datatore.exception.DataStoreException;
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
-      
+
     @Autowired
     private CategoryService categoryService;
-    
+
     @RequestMapping(value = "/{categoryId}")
-    public String browseByCategory(Model model,@PathVariable("categoryId") String categoryId) throws DataStoreException {
+    public String browseByCategory(Model model,
+            @PathVariable("categoryId") String categoryId,
+            Pageable pageable) throws DataStoreException {
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
-        model.addAttribute("aggregations", categoryService.findByCategory(categoryId,null));    
-        return "shop";
-    }
-    
-    @RequestMapping(value = "/{categoryId}/{keyword}")
-    public String browseByCategoryWithKeyword(Model model,@PathVariable("categoryId") String categoryId,@PathVariable("keyword") String keyword) throws DataStoreException {
-        model.addAttribute("category", categoryService.findOne(categoryId));
-        model.addAttribute("parents", categoryService.getParents(categoryId));
-        model.addAttribute("aggregations", categoryService.findByCategory(categoryId,keyword));    
+        model.addAttribute("aggregations", categoryService.findByCategory(categoryId, null,pageable));
         return "shop";
     }
 
-//    @RequestMapping(value = "/{categoryId}/search/{keyword}")
-//    public String browseByCategory(@PathVariable("categoryId") String categoryId, @PathVariable("keyword") String keyword) {
-//        return "shop";
-//    }
+    @RequestMapping(value = "/{categoryId}/{keyword}")
+    public String browseByCategoryWithKeyword(Model model,
+            @PathVariable("categoryId") String categoryId,
+            @PathVariable("keyword") String keyword,
+            Pageable pageable) throws DataStoreException {
+        model.addAttribute("category", categoryService.findOne(categoryId));
+        model.addAttribute("parents", categoryService.getParents(categoryId));
+        model.addAttribute("aggregations", categoryService.findByCategory(categoryId, keyword,pageable));
+        return "shop";
+    }
+
 }

@@ -29,21 +29,6 @@ public class ProductService {
     @Autowired
     private ElasticSearchUtil elasticSearchUtil;
 
-    public Map<String, Object> save(Map<String, Object> product) throws DataStoreException {
-        return dataStore.create(product);
-    }
-
-    public <S extends Map<String, Object>> Iterable<Map<String, Object>> save(Iterable<Map<String, Object>> itrbl) throws DataStoreException {
-        itrbl.forEach(product -> {
-            try {
-                dataStore.create(product);
-            } catch (DataStoreException ex) {
-                LOGGER.error("Unable to crete Product", ex);
-            }
-        });
-        return null;
-    }
-
     public void deleteAll() throws DataStoreException {
         dataStore.delete("product");
     }
@@ -51,11 +36,7 @@ public class ProductService {
     public Map<String, Object> findOne(String id) throws DataStoreException {
         return dataStore.read("product", id);
     }
-
-    public List<Map<String, Object>> findAll() throws DataStoreException {
-        return dataStore.list("product");
-    }
-
+    
     public AggregatedResults search(String keyword) throws DataStoreException {
         Map<String, Object> browseQuery = new HashMap<>();
         browseQuery.put("keyword", keyword);

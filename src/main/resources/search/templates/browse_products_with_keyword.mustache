@@ -1,4 +1,6 @@
 {  
+    "size":{{size}}{{^size}}10{{/size}},
+    {{#from}}"from":{{from}},{{/from}}
 "aggregations": {
         "brand": {
           "terms": {
@@ -9,12 +11,8 @@
    "query":{  
       "bool":{  
          "must":{  
-            "terms":{  
-               "categories": [
-                    "{{#categories}}",
-                    "{{.}}",
-                    "{{/categories}}"
-                  ]
+            "prefix": {
+                "categoriesMap": "{{categoriesMap}}"
             }
          },
          "must":{  

@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static java.util.stream.Collectors.joining;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zols.datastore.DataStore;
 import org.zols.datastore.query.Filter;
@@ -64,45 +66,22 @@ public class CategoryService {
         return children.size() > 0 ? children : null;
     }
 
-    private List<String> categoriesToLookForProducts(String categoryId) throws DataStoreException {
-        List<String> categoriesToLookFor = new ArrayList<>();
-        wallThroughChildren(categoriesToLookFor, categoryId);
-        return categoriesToLookFor;
-    }
-
-    public AggregatedResults findByCategory(String categoryId,String keyword) throws DataStoreException {
-        Map<String,Object> browseQuery = new HashMap<>();
-        browseQuery.put("categories", categoriesToLookForProducts(categoryId));
-        browseQuery.put("keyword", keyword);
-        return elasticSearchUtil.aggregatedSearch("product", 
-                (keyword ==null) ? "browse_products" : "browse_products_with_keyword", 
-                browseQuery);
-    }
-
-    private void wallThroughChildren(List<String> categoriesToLookFor, String categoryId) throws DataStoreException {
-        List<Category> children = getChildren(categoryId);
-        categoriesToLookFor.add(categoryId);
-        if (children != null) {
-            for (Category child : children) {
-                categoriesToLookFor.add(child.getId());
-                wallThroughChildren(categoriesToLookFor, child.getId());
-            }
+    public AggregatedResults findByCategory(String categoryId,
+            String keyword,
+            Pageable pageable) throws DataStoreException {
+        Map<String, Object> browseQuery = new HashMap<>();
+        List<Category> parents = getParents(categoryId);
+        if (parents == null) {
+            parents = new ArrayList<>();
         }
-    }
-
-    public Category save(Category category) throws DataStoreException {
-        return dataStore.create(category);
-    }
-
-    public <S extends Category> List<Category> save(List<? extends Category> itrbl) {
-        itrbl.forEach(category -> {
-            try {
-                dataStore.create(category);
-            } catch (DataStoreException ex) {
-                LOGGER.error("Unable to crete Category", ex);
-            }
-        });
-        return null;
+        parents.add(findOne(categoryId));
+        browseQuery.put("categoriesMap", parents.stream().map(category -> category.getId()).collect(joining("_")));
+        browseQuery.put("keyword", keyword);
+        browseQuery.put("size", pageable.getPageSize());
+        browseQuery.put("from", (pageable.getPageNumber() * pageable.getPageSize()) + 1);
+        return elasticSearchUtil.aggregatedSearch("product",
+                (keyword == null) ? "browse_products" : "browse_products_with_keyword",
+                browseQuery);
     }
 
     public Category findOne(String id) throws DataStoreException {
@@ -111,10 +90,6 @@ public class CategoryService {
             category.setChildren(getChildren(id));
         }
         return category;
-    }
-
-    public void deleteAll() throws DataStoreException {
-        dataStore.delete(Category.class);
     }
 
 }

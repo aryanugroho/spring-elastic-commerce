@@ -56,6 +56,12 @@
                     "type": "string"
                 }
             },
+            "categoriesMap": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
             "title": {
                 "type": "string"
             },
