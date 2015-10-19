@@ -26,6 +26,8 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import static org.zols.datastore.util.JsonUtil.asMap;
 
@@ -39,18 +41,19 @@ public class ElasticSearchUtil {
     @Autowired
     private Client client;
 
-    public AggregatedResults aggregatedSearch(String type, String template, Object model) {
+    public AggregatedResults aggregatedSearch(String type, String template, Map<String, Object> browseQuery, Pageable pageable) {
         AggregatedResults aggregatedResults = new AggregatedResults();
-        Map<String, Object> searchResponse = searchResponse(type, template, model);
-        aggregatedResults.setItems(resultsOf(searchResponse));
+        browseQuery.put("size", pageable.getPageSize());
+        browseQuery.put("from", (pageable.getPageNumber() * pageable.getPageSize()) + 1);
+        Map<String, Object> searchResponse = searchResponse(type, template, browseQuery);
+        aggregatedResults.setPage(resultsOf(searchResponse,pageable));
         aggregatedResults.setBuckets(bucketsOf(searchResponse));
         return aggregatedResults;
     }
 
-    public List<Map<String, Object>> search(String type, String template, Object model) {
-        return resultsOf(searchResponse(type, template, model));
-    }
-
+//    public List<Map<String, Object>> search(String type, String template, Object model) {
+//        return resultsOf(searchResponse(type, template, model));
+//    }
     private List<Bucket> bucketsOf(Map<String, Object> searchResponse) {
         List<Bucket> buckets = null;
         if (searchResponse != null) {
@@ -83,19 +86,22 @@ public class ElasticSearchUtil {
         return buckets;
     }
 
-    private List<Map<String, Object>> resultsOf(Map<String, Object> searchResponse) {
+    private Page<List> resultsOf(Map<String, Object> searchResponse,Pageable pageable) {
+        Page<List> page = null;
         List<Map<String, Object>> list = null;
         if (searchResponse != null) {
             Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
+            
             if (0 != noOfRecords) {
                 List<Map<String, Object>> recordsMapList = (List<Map<String, Object>>) ((Map<String, Object>) searchResponse.get("hits")).get("hits");
                 list = new ArrayList<>(recordsMapList.size());
                 for (Map<String, Object> recordsMapList1 : recordsMapList) {
                     list.add((Map<String, Object>) recordsMapList1.get("_source"));
                 }
-            }
-        }
-        return list;
+                page = new PageContentImpl(list,pageable,noOfRecords);
+            }            
+        }        
+        return page;
     }
 
     public Map<String, Object> searchResponse(String type, String query) {

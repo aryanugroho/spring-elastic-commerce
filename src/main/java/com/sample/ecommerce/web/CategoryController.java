@@ -27,6 +27,7 @@ public class CategoryController {
             Pageable pageable) throws DataStoreException {
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
+        model.addAttribute("pageurl","/categories/"+categoryId);
         model.addAttribute("aggregations", categoryService.findByCategory(categoryId, null,pageable));
         return "shop";
     }
@@ -38,6 +39,7 @@ public class CategoryController {
             Pageable pageable) throws DataStoreException {
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
+        model.addAttribute("pageurl","/categories/"+categoryId+"/"+keyword);
         model.addAttribute("aggregations", categoryService.findByCategory(categoryId, keyword,pageable));
         return "shop";
     }

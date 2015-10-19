@@ -281,7 +281,7 @@
                     <div class="col-sm-9 padding-right">
                         <div class="features_items"><!--features_items-->
                             <h2 class="title text-center">Features Items</h2>
-                            <div class="col-sm-4" th:each="product : ${aggregations.items}">
+                            <div class="col-sm-4" th:each="product : ${aggregations.page.content}">
                                 <div class="product-image-wrapper">
                                     <div class="single-products">
                                         <div class="productinfo text-center">
@@ -590,10 +590,19 @@
 
                         </div><!--features_items-->
                         <ul class="pagination">
-                            <li class="active"><a href="">1</a></li>
-                            <li><a href="">2</a></li>
-                            <li><a href="">3</a></li>
-                            <li><a href="">&raquo;</a></li>
+                            <li th:class="${aggregations.page.number eq 0} ? 'disabled' : ''">
+                                <a th:if="${not aggregations.page.first}" th:href="@{${pageurl}(page=${aggregations.page.number-1},size=${aggregations.page.size})}">&laquo;</a>
+                                <a th:if="${aggregations.page.first}" href="javascript:void(0);">&laquo;</a>
+                            </li>
+
+                            <li th:each="pageNo : ${#numbers.sequence(0, aggregations.page.totalPages - 1)}" th:class="${aggregations.page.number eq pageNo}? 'active' : ''">
+                                <a th:if="${aggregations.page.number  eq pageNo}" href="javascript:void(0);" th:text="${pageNo + 1}"/>
+                                <a th:if="${not (aggregations.page.number  eq pageNo)}" th:href="@{${pageurl}(page=${pageNo},size=${aggregations.page.size})}" th:text="${pageNo + 1}"/>
+                            </li>
+                            <li th:class="${aggregations.page.number + 1 ge aggregations.page.totalPages} ? 'disabled' : ''">
+                                <a th:if="${not aggregations.page.last}" th:href="@{${pageurl}(page=${aggregations.page.number+1},size=${aggregations.page.size})}">&raquo;</a>
+                                <a th:if="${aggregations.page.last}" href="javascript:void(0);">&raquo;</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

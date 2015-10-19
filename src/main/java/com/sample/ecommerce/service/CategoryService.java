@@ -76,12 +76,10 @@ public class CategoryService {
         }
         parents.add(findOne(categoryId));
         browseQuery.put("categoriesMap", parents.stream().map(category -> category.getId()).collect(joining("_")));
-        browseQuery.put("keyword", keyword);
-        browseQuery.put("size", pageable.getPageSize());
-        browseQuery.put("from", (pageable.getPageNumber() * pageable.getPageSize()) + 1);
+        browseQuery.put("keyword", keyword);        
         return elasticSearchUtil.aggregatedSearch("product",
                 (keyword == null) ? "browse_products" : "browse_products_with_keyword",
-                browseQuery);
+                browseQuery,pageable);
     }
 
     public Category findOne(String id) throws DataStoreException {

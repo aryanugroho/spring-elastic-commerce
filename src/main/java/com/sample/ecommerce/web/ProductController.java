@@ -7,6 +7,7 @@ package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +35,8 @@ public class ProductController {
     }
     
     @RequestMapping(value = "/search/{keyword}", method = RequestMethod.GET)
-    public String search(Model model,@PathVariable("keyword") String keyword) throws DataStoreException {
-        model.addAttribute("aggregations", productService.search(keyword));    
+    public String search(Model model,@PathVariable("keyword") String keyword,Pageable pageable) throws DataStoreException {
+        model.addAttribute("aggregations", productService.search(keyword,pageable));    
         return "shop";
     }
 }

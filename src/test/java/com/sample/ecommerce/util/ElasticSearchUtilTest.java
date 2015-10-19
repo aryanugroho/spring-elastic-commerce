@@ -29,18 +29,7 @@ public class ElasticSearchUtilTest {
 
     @Test
     public void testSearchResponse() {
-        Map<String, Object> response = elasticSearchUtil.searchResponse( "product", getContentFromClasspath("/com/sample/ecommerce/util/queries/search_products.json"));
-        Assert.assertNotNull(response);
-    }
-
-    @Test
-    public void testSearchTemplateResponse() throws IOException {
-        List<String> categoriesToLookFor = new ArrayList<>();
-        categoriesToLookFor.add("lcdtv");
-        categoriesToLookFor.add("laptops");
-        Map<String,Object> browseQuery = new HashMap<>();
-        browseQuery.put("categories", categoriesToLookFor);
-        AggregatedResults response = elasticSearchUtil.aggregatedSearch( "product", "browse_products",browseQuery);
+        Map<String, Object> response = elasticSearchUtil.searchResponse("product", getContentFromClasspath("/com/sample/ecommerce/util/queries/search_products.json"));
         Assert.assertNotNull(response);
     }
 

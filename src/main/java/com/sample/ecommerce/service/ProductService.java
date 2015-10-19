@@ -8,11 +8,11 @@ package com.sample.ecommerce.service;
 import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.util.ElasticSearchUtil;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zols.datastore.DataStore;
 import org.zols.datatore.exception.DataStoreException;
@@ -37,12 +37,12 @@ public class ProductService {
         return dataStore.read("product", id);
     }
     
-    public AggregatedResults search(String keyword) throws DataStoreException {
+    public AggregatedResults search(String keyword,Pageable pageable) throws DataStoreException {
         Map<String, Object> browseQuery = new HashMap<>();
         browseQuery.put("keyword", keyword);
         return elasticSearchUtil.aggregatedSearch("product",
                 "search_products_with_keyword",
-                browseQuery);
+                browseQuery,pageable);
     }
 
 }

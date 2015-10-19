@@ -6,15 +6,12 @@
 package com.sample.ecommerce.domain;
 
 import java.util.List;
-import java.util.Map;
+import org.springframework.data.domain.Page;
 
-/**
- *
- */
 public class AggregatedResults {
 
     private List<Bucket> buckets;
-    private List<Map<String, Object>> items;
+    private Page<List> page;
 
     public List<Bucket> getBuckets() {
         return buckets;
@@ -24,12 +21,12 @@ public class AggregatedResults {
         this.buckets = buckets;
     }
 
-    public List<Map<String, Object>> getItems() {
-        return items;
+    public Page<List> getPage() {
+        return page;
     }
 
-    public void setItems(List<Map<String, Object>> items) {
-        this.items = items;
+    public void setPage(Page<List> page) {
+        this.page = page;
     }
 
 }
