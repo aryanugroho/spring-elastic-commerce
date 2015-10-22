@@ -72,6 +72,7 @@ public class ProductController {
                 }
             }
         }
+        model.addAttribute("query",query);
         model.addAttribute("aggregations", productService.search(keyword, pageable, query));
         model.addAttribute("pageurl",getPageUrl(request));
         return "shop";

@@ -250,7 +250,7 @@
                                 <h2 th:text="${bucket.name}">Brands</h2>
                                 <div class="brands-name">
                                     <ul class="nav nav-pills nav-stacked" th:each="bucketItem : ${bucket.items}">
-                                        <li><a href="javascript:onFilter()"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span><span th:text="${bucketItem.name}">Acne</span></a></li>
+                                        <li><a href="javascript://"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span><span th:text="${bucketItem.name}">Acne</span></a></li>
                                         <!--/*-->
                                         <li><a href=""> <span class="pull-right">(56)</span>Grüne Erde</a></li>
                                         <li><a href=""> <span class="pull-right">(27)</span>Albiro</a></li>
@@ -278,9 +278,26 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-9 padding-right" th:if="${aggregations.page?.content}">
+                    <ol id="query-filters" class="breadcrumb pull-right" th:if="${query != null}">
+                        <li class="active" th:each="filter : ${query.filters}">
+                            <span th:text="${filter.name}" name='ssdsd'>Home</span>
+                            <span href="#" th:if="${filter?.value}" th:each="value : ${filter.value}">
+                                <span th:text="${value}">Text</span><a href="#"><i class="glyphicon glyphicon-remove-circle"></i></a>
+                            </span>
+                        </li>
+                        <!--/*-->
+                        <li class="active"><a href="#">Library</a></li>
+                        <li class="active"><a href="#">Data</a></li>
+                        <!--*/-->
+                        <li><a th:href="${#strings.substring(pageurl,0,#strings.indexOf(pageurl,'?'))}">Clear All</a></li>
+                    </ol>
+
+
+
+
+
+                    <div id="features_items" data-th-attr="data-pageurl=${#strings.substring(pageurl,0,#strings.indexOf(pageurl,'?'))}" class="col-sm-9 padding-right" th:if="${aggregations.page?.content}">
                         <div class="features_items"><!--features_items-->
-                            <h2 class="title">Features Items</h2>
                             <div class="col-sm-4" th:each="product : ${aggregations.page.content}">
                                 <div class="product-image-wrapper">
                                     <div class="single-products">
@@ -613,33 +630,68 @@
                 <script src="js/main.js" th:src="@{/js/main.js}"></script>
                 <script th:inline="javascript">
                     /*<![CDATA[*/
-                    function onFilter() {
-                        var key = encodeURI(key);
-                        var value = encodeURI(value);
+                    (function ($) {
 
-                        var kvp = document.location.search.substr(1).split('&');
+                        var filters = {};
+                        $('#query-filters li.active').each(function () {
+                            var filterName = $(this).children().first().text();
+                            var values = [];
+                            var index = 0;
+                            $(this).children().each(function () {
+                                if (index !== 0) {
+                                    values.push($(this).children().first().text());
+                                }
+                                index++;
+                            });
+                            filters[filterName] = values;
 
-                        var i = kvp.length;
-                        var x;
-                        while (i--)
-                        {
-                            x = kvp[i].split('=');
+                        });
+                        console.log(filters);
 
-                            if (x[0] === key)
-                            {
-                                x[1] = value;
-                                kvp[i] = x.join('=');
-                                break;
+                        $('#query-filters .glyphicon-remove-circle').on("click", function (e) {
+                            removeFilter($(this).closest("li").children().first().text(), $(this).parent().prev().text());
+                        });
+
+                        $(".brands-name a").on("click", function (e) {
+                            addFilter($(this).parent().parent().parent().prev().text(), $(this).children().last().text());
+                        });
+
+                        function addFilter(name, value) {
+                            if (filters[name]) {
+                                filters[name].push(value);                                
                             }
+                            else {
+                                filters[name] = [value];
+                            }                            
+                            openUpdatedFilterUrl();
+                        }
+                        function removeFilter(name, value) {
+                            var i = filters[name].indexOf(value);
+                            if (i !== -1) {
+                                filters[name].splice(i, 1);
+                            }
+                            openUpdatedFilterUrl();
                         }
 
-                        if (i < 0) {
-                            kvp[kvp.length] = [key, value].join('=');
+                        function openUpdatedFilterUrl() {
+                            var filterTexts = [];
+                            for (var filterName in filters) {
+                                if (filters[filterName].length !== 0) {
+                                    filterTexts.push(filterName + "=" + filters[filterName].join(','));
+                                }
+                            }
+                            var filteredUrl ;
+                            if (filterTexts.length !== 0) {
+                                filteredUrl = $("#features_items").attr('data-pageurl') + '?' + filterTexts.join('&');
+                            } else {
+                                filteredUrl = $("#features_items").attr('data-pageurl');
+                            }
+                            
+                            window.location = filteredUrl;
+
                         }
+                    }(jQuery));
 
-
-                        alert(kvp.join('&'));
-                    }
                     /*]]>*/
                 </script>
             </div>
