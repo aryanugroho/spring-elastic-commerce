@@ -1,20 +1,30 @@
-{  
-"aggregations": {
-        
-"brand": {
-          "terms": {
-            "field": "brand"
-          }
-        },"browse": {
-          "terms": {
-            "field": "categories"
-          }
-        }
-      },
-   "query":{  
-      "query_string":{  
-               "default_field":"title",
-               "query":"{{keyword}}"
+{
+   "size":{{size}}{{^size}}10{{/size}},
+    {{#from}}"from":{{from}},{{/from}}
+     "aggregations": {
+        "categories": {
+            "terms": {
+                "field": "categories"
             }
-   }
+        },
+        "brand": {
+            "terms": {
+                "field": "brand"
+            }
+        }
+        
+    },
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "query_string": {
+                        "default_field": "title",
+                        "query": "{{keyword}}"
+                    }
+                }
+            ],
+            "filter": []
+        }
+    }
 }

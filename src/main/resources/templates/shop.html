@@ -122,8 +122,8 @@
         <section>
             <div class="container" th:fragment="content">
                 <div class="row">
-                    <ol class="breadcrumb">
-                        <li th:if="${parents != null}" th:each="parent : ${parents}"><a href="#" th:href="@{'/categories/'+${parent.id}}" th:text="${parent.label}">Home</a></li>
+                    <ol class="breadcrumb" th:if="${parents != null}">
+                        <li th:each="parent : ${parents}"><a href="#" th:href="@{'/categories/'+${parent.id}}" th:text="${parent.label}">Home</a></li>
                         <!--/*-->
                         <li><a href="#">Library</a></li>
                         <!--*/-->
@@ -246,11 +246,11 @@
                                 <!--*/-->
                             </div><!--/category-productsr-->
 
-                            <div class="brands_products" th:each="bucket : ${aggregations.buckets}"><!--brands_products-->
+                            <div th:if="${aggregations?.buckets}" class="brands_products" th:each="bucket : ${aggregations.buckets}"><!--brands_products-->
                                 <h2 th:text="${bucket.name}">Brands</h2>
                                 <div class="brands-name">
                                     <ul class="nav nav-pills nav-stacked" th:each="bucketItem : ${bucket.items}">
-                                        <li><a href=""> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span><span th:text="${bucketItem.name}">Acne</span></a></li>
+                                        <li><a href="javascript:onFilter()"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span><span th:text="${bucketItem.name}">Acne</span></a></li>
                                         <!--/*-->
                                         <li><a href=""> <span class="pull-right">(56)</span>Grüne Erde</a></li>
                                         <li><a href=""> <span class="pull-right">(27)</span>Albiro</a></li>
@@ -278,9 +278,9 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-9 padding-right">
+                    <div class="col-sm-9 padding-right" th:if="${aggregations.page?.content}">
                         <div class="features_items"><!--features_items-->
-                            <h2 class="title text-center">Features Items</h2>
+                            <h2 class="title">Features Items</h2>
                             <div class="col-sm-4" th:each="product : ${aggregations.page.content}">
                                 <div class="product-image-wrapper">
                                     <div class="single-products">
@@ -589,7 +589,7 @@
                             <!--*/-->
 
                         </div><!--features_items-->
-                        <ul class="pagination">
+                        <ul class="pagination" th:if="${aggregations.page.totalPages &gt; 1}">
                             <li th:class="${aggregations.page.number eq 0} ? 'disabled' : ''">
                                 <a th:if="${not aggregations.page.first}" th:href="@{${pageurl}(page=${aggregations.page.number-1},size=${aggregations.page.size})}">&laquo;</a>
                                 <a th:if="${aggregations.page.first}" href="javascript:void(0);">&laquo;</a>
@@ -611,6 +611,37 @@
                 <script src="js/bootstrap3-typeahead.min.js" th:src="@{/js/bootstrap3-typeahead.min.js}"></script>
                 <script src="js/jquery.prettyPhoto.js" th:src="@{/js/jquery.prettyPhoto.js}"></script>
                 <script src="js/main.js" th:src="@{/js/main.js}"></script>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    function onFilter() {
+                        var key = encodeURI(key);
+                        var value = encodeURI(value);
+
+                        var kvp = document.location.search.substr(1).split('&');
+
+                        var i = kvp.length;
+                        var x;
+                        while (i--)
+                        {
+                            x = kvp[i].split('=');
+
+                            if (x[0] === key)
+                            {
+                                x[1] = value;
+                                kvp[i] = x.join('=');
+                                break;
+                            }
+                        }
+
+                        if (i < 0) {
+                            kvp[kvp.length] = [key, value].join('=');
+                        }
+
+
+                        alert(kvp.join('&'));
+                    }
+                    /*]]>*/
+                </script>
             </div>
 
         </section>

@@ -6,12 +6,7 @@
 package com.sample.ecommerce.util;
 
 import com.sample.ecommerce.Application;
-import com.sample.ecommerce.domain.AggregatedResults;
 import static com.sample.ecommerce.util.ElasticSearchUtil.getContentFromClasspath;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;

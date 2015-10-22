@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zols.datastore.DataStore;
+import org.zols.datastore.query.Query;
 import org.zols.datatore.exception.DataStoreException;
 
 @Service
@@ -37,12 +38,14 @@ public class ProductService {
         return dataStore.read("product", id);
     }
     
-    public AggregatedResults search(String keyword,Pageable pageable) throws DataStoreException {
+    public AggregatedResults search(String keyword,
+            Pageable pageable,
+            Query query) throws DataStoreException {
         Map<String, Object> browseQuery = new HashMap<>();
         browseQuery.put("keyword", keyword);
         return elasticSearchUtil.aggregatedSearch("product",
                 "search_products_with_keyword",
-                browseQuery,pageable);
+                browseQuery,pageable,query);
     }
 
 }

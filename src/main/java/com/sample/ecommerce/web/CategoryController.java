@@ -6,6 +6,8 @@
 package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.service.CategoryService;
+import static com.sample.ecommerce.util.HttpUtil.getPageUrl;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,10 +38,11 @@ public class CategoryController {
     public String browseByCategoryWithKeyword(Model model,
             @PathVariable("categoryId") String categoryId,
             @PathVariable("keyword") String keyword,
+            HttpServletRequest request,
             Pageable pageable) throws DataStoreException {
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
-        model.addAttribute("pageurl","/categories/"+categoryId+"/"+keyword);
+        model.addAttribute("pageurl",getPageUrl(request));
         model.addAttribute("aggregations", categoryService.findByCategory(categoryId, keyword,pageable));
         return "shop";
     }

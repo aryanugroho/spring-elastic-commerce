@@ -22,17 +22,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.QueryBuilder;
+import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import static org.zols.datastore.elasticsearch.ElasticSearchDataStore.getQueryBuilder;
+import org.zols.datastore.query.Query;
 import static org.zols.datastore.util.JsonUtil.asMap;
+import static org.zols.datastore.util.JsonUtil.asString;
 
 @Component
 public class ElasticSearchUtil {
+
+    private static final org.slf4j.Logger LOGGER = getLogger(ElasticSearchUtil.class);
 
     @Value("${spring.application.name}")
     private String indexName;
@@ -41,14 +49,24 @@ public class ElasticSearchUtil {
     @Autowired
     private Client client;
 
-    public AggregatedResults aggregatedSearch(String type, String template, Map<String, Object> browseQuery, Pageable pageable) {
+    public AggregatedResults aggregatedSearch(String type,
+            String template,
+            Map<String, Object> browseQuery,
+            Pageable pageable, Query query) {
         AggregatedResults aggregatedResults = new AggregatedResults();
         browseQuery.put("size", pageable.getPageSize());
-        browseQuery.put("from", (pageable.getPageNumber() * pageable.getPageSize()) + 1);
-        Map<String, Object> searchResponse = searchResponse(type, template, browseQuery);
-        aggregatedResults.setPage(resultsOf(searchResponse,pageable));
+        browseQuery.put("from", (pageable.getPageNumber() * pageable.getPageSize()));
+        Map<String, Object> searchResponse = searchResponse(type, template, browseQuery, query);
+        aggregatedResults.setPage(resultsOf(searchResponse, pageable));
         aggregatedResults.setBuckets(bucketsOf(searchResponse));
         return aggregatedResults;
+    }
+
+    public AggregatedResults aggregatedSearch(String type,
+            String template,
+            Map<String, Object> browseQuery,
+            Pageable pageable) {
+        return aggregatedSearch(type, template, browseQuery, pageable, null);
     }
 
 //    public List<Map<String, Object>> search(String type, String template, Object model) {
@@ -86,42 +104,60 @@ public class ElasticSearchUtil {
         return buckets;
     }
 
-    private Page<List> resultsOf(Map<String, Object> searchResponse,Pageable pageable) {
+    private Page<List> resultsOf(Map<String, Object> searchResponse, Pageable pageable) {
         Page<List> page = null;
         List<Map<String, Object>> list = null;
         if (searchResponse != null) {
             Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
-            
+
             if (0 != noOfRecords) {
                 List<Map<String, Object>> recordsMapList = (List<Map<String, Object>>) ((Map<String, Object>) searchResponse.get("hits")).get("hits");
                 list = new ArrayList<>(recordsMapList.size());
                 for (Map<String, Object> recordsMapList1 : recordsMapList) {
                     list.add((Map<String, Object>) recordsMapList1.get("_source"));
                 }
-                page = new PageContentImpl(list,pageable,noOfRecords);
-            }            
-        }        
+                page = new PageContentImpl(list, pageable, noOfRecords);
+            }
+        }
         return page;
     }
 
-    public Map<String, Object> searchResponse(String type, String query) {
-        SearchResponse response = client.prepareSearch(indexName)
-                .setTypes(type)
-                .setSource(query)
+    public Map<String, Object> searchResponse(String type, String queryText, Query query) {
+        
+        SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
+                .setTypes(type);
+        if (query != null) {
+            QueryBuilder builder = getQueryBuilder(query);
+            Map<String,Object> queryAsMap = asMap(queryText);
+            List filter = (List) ((Map<String,Object>)((Map<String,Object>) queryAsMap.get("query")).get("bool")).get("filter");
+            filter.add(asMap(builder.toString()));
+            String filterAppendedQuery = asString(queryAsMap);
+            LOGGER.debug("Executing Elastic Search Query\n{}", filterAppendedQuery);
+            searchRequestBuilder
+                .setSource(filterAppendedQuery);
+        }
+        else {
+            LOGGER.debug("Executing Elastic Search Query\n{}", queryText);
+            searchRequestBuilder
+                .setSource(queryText);
+        }
+        SearchResponse response = searchRequestBuilder
                 .execute()
                 .actionGet();
         client.close();
         return asMap(response.toString());
     }
 
+    public Map<String, Object> searchResponse(String type, String queryText) {
+        return searchResponse(type, queryText, null);
+    }
+
+    public Map<String, Object> searchResponse(String type, String template, Object model, Query query) {
+        return searchResponse(type, render(template, model), query);
+    }
+
     public Map<String, Object> searchResponse(String type, String template, Object model) {
-        SearchResponse response = client.prepareSearch(indexName)
-                .setTypes(type)
-                .setSource(render(template, model))
-                .execute()
-                .actionGet();
-        client.close();
-        return asMap(response.toString());
+        return searchResponse(type, template, model, null);
     }
 
     public static String getContentFromClasspath(String resourcePath) {

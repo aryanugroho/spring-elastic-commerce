@@ -12,14 +12,9 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.zols.datatore.exception.DataStoreException;
 
@@ -39,10 +34,10 @@ public class ProductAPIController {
     }
 
 
-    @RequestMapping(value = "/search/{keyword}", method = GET)
-    public AggregatedResults keywordSearch(@PathVariable(value = "keyword") String keyword,Pageable pageable) throws DataStoreException {
-        LOGGER.info("Searching products for keyword {}",keyword);
-        return productService.search(keyword,pageable);
-    }
+//    @RequestMapping(value = "/search/{keyword}", method = GET)
+//    public AggregatedResults keywordSearch(@PathVariable(value = "keyword") String keyword,Pageable pageable) throws DataStoreException {
+//        LOGGER.info("Searching products for keyword {}",keyword);
+//        return productService.search(keyword,pageable);
+//    }
 
 }
