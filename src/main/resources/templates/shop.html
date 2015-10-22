@@ -658,7 +658,9 @@
 
                         function addFilter(name, value) {
                             if (filters[name]) {
-                                filters[name].push(value);                                
+                                if(filters[name].indexOf(value) === -1) {
+                                    filters[name].push(value);
+                                }                                                                
                             }
                             else {
                                 filters[name] = [value];
