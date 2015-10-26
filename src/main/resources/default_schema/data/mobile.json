@@ -5,6 +5,7 @@
         "categories": ["mobiles"],
         "title": "iPhone",
         "categoriesMap": ["electronics_mobiles"],
-        "brand": "Apple"
+        "brand": "Apple",
+        "price":1
     }
 ]

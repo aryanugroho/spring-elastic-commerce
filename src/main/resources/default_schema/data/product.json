@@ -5,54 +5,62 @@
         "categories": ["tablets"],
         "categoriesMap": ["electronics_tablets"],
         "title": "Galaxy Note",
-        "brand": "Samsung"
+        "brand": "Samsung",
+        "price":4
     }, {
         "imageUrl": "/images/shop/lenovomixx.png",
         "id": "9",
         "categories": ["laptops", "tablets"],
         "categoriesMap": ["electronics_tablets", "electronics_computer_laptops"],
         "title": "Mixx 3",
-        "brand": "Lenovo"
+        "brand": "Lenovo",
+        "price":9
     }, {
         "imageUrl": "/images/shop/nexus.png",
         "id": "5",
         "categories": ["tablets"],
         "categoriesMap": ["electronics_tablets"],
         "title": "Nexus",
-        "brand": "Google"
+        "brand": "Google",
+        "price":5
     }, {
         "imageUrl": "/images/shop/panasonicviera.png",
         "id": "6",
         "categories": ["lcdtv"],
         "categoriesMap": ["electronics_tv_lcdtv"],
         "title": "Viera",
-        "brand": "Panasonic"
+        "brand": "Panasonic",
+        "price":6
     }, {
         "imageUrl": "/images/shop/imac.png",
         "id": "2",
         "categories": ["desktop"],
         "categoriesMap": ["electronics_computer_desktop"],
         "title": "iMac",
-        "brand": "Apple"
+        "brand": "Apple",
+        "price":2
     }, {
         "imageUrl": "/images/shop/sonybravia.png",
         "id": "7",
         "categories": ["ledtv"],
         "categoriesMap": ["electronics_tv_ledtv"],
         "title": "Bravia",
-        "brand": "Sony"
+        "brand": "Sony",
+        "price":7
     }, {
         "imageUrl": "/images/shop/iair.png",
         "id": "3",
         "categories": ["laptops"],
         "categoriesMap": ["electronics_computer_laptops"],
         "title": "iAir",
-        "brand": "Apple"
+        "brand": "Apple",
+        "price":3
     }, {
         "imageUrl": "/images/shop/sonyvaio.png",
         "id": "8",
         "categories": ["laptops"],
         "categoriesMap": ["electronics_computer_laptops"],
         "title": "VAIO",
-        "brand": "Sony"
+        "brand": "Sony",
+        "price":8
     }]

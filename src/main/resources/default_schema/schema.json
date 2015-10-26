@@ -67,6 +67,9 @@
             },
             "brand": {
                 "type": "string"
+            },
+            "price": {
+                "type": "number"
             }
         },
         "required": ["title", "brand", "categories", "imageUrl"]

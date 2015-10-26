@@ -11,6 +11,7 @@ import com.github.mustachejava.MustacheFactory;
 import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.domain.Bucket;
 import com.sample.ecommerce.domain.BucketItem;
+import com.sample.ecommerce.domain.MinMaxItem;
 import com.sample.ecommerce.domain.TextItem;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,20 +84,40 @@ public class ElasticSearchUtil {
                 List<Map<String, Object>> bucketsMaps;
 
                 buckets = new ArrayList<>();
+                String aggregationName;
                 for (Map.Entry<String, Object> entrySet : aggregations.entrySet()) {
-                    bucket = new Bucket();
-                    bucket.setName(entrySet.getKey());
-                    bucketsMaps = (List<Map<String, Object>>) ((Map<String, Object>) entrySet.getValue()).get("buckets");
 
-                    bucketItems = new ArrayList<>();
-                    for (Map<String, Object> bucketsMap : bucketsMaps) {
-                        bucketItem = new TextItem();
-                        bucketItem.setName(bucketsMap.get("key").toString());
-                        bucketItem.setCount((Integer) bucketsMap.get("doc_count"));
-                        bucketItems.add(bucketItem);
+                    aggregationName = entrySet.getKey();
+                    if (!aggregationName.startsWith("max_")) {
+                        bucket = new Bucket();
+                        if (!aggregationName.startsWith("min_")) {
+                            bucket.setName(aggregationName);
+                            bucketsMaps = (List<Map<String, Object>>) ((Map<String, Object>) entrySet.getValue()).get("buckets");
+                            bucketItems = new ArrayList<>();
+                            for (Map<String, Object> bucketsMap : bucketsMaps) {
+                                bucketItem = new TextItem();
+                                bucketItem.setName(bucketsMap.get("key").toString());
+                                bucketItem.setCount((Integer) bucketsMap.get("doc_count"));
+                                bucketItems.add(bucketItem);
+                            }
+                            bucket.setItems(bucketItems);
+                        } else {
+                            bucket.setName(aggregationName.replaceAll("min_", ""));
+                            bucketsMaps = (List<Map<String, Object>>) ((Map<String, Object>) entrySet.getValue()).get("buckets");
+                            bucketItems = new ArrayList<>();
+
+                            bucketItem = new MinMaxItem();
+                            ((MinMaxItem) bucketItem).setMin(1);
+                            ((MinMaxItem) bucketItem).setMax(8);
+//                                bucketItem.setName(bucketsMap.get("key").toString());
+//                                bucketItem.setCount((Integer) bucketsMap.get("doc_count"));
+                            bucketItems.add(bucketItem);
+
+                            bucket.setItems(bucketItems);
+                        }
+                        buckets.add(bucket);
                     }
-                    bucket.setItems(bucketItems);
-                    buckets.add(bucket);
+
                 }
 
             }
@@ -123,23 +144,22 @@ public class ElasticSearchUtil {
     }
 
     public Map<String, Object> searchResponse(String type, String queryText, Query query) {
-        
+
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
                 .setTypes(type);
         if (query != null) {
             QueryBuilder builder = getQueryBuilder(query);
-            Map<String,Object> queryAsMap = asMap(queryText);
-            List filter = (List) ((Map<String,Object>)((Map<String,Object>) queryAsMap.get("query")).get("bool")).get("filter");
+            Map<String, Object> queryAsMap = asMap(queryText);
+            List filter = (List) ((Map<String, Object>) ((Map<String, Object>) queryAsMap.get("query")).get("bool")).get("filter");
             filter.add(asMap(builder.toString()));
             String filterAppendedQuery = asString(queryAsMap);
             LOGGER.debug("Executing Elastic Search Query\n{}", filterAppendedQuery);
             searchRequestBuilder
-                .setSource(filterAppendedQuery);
-        }
-        else {
+                    .setSource(filterAppendedQuery);
+        } else {
             LOGGER.debug("Executing Elastic Search Query\n{}", queryText);
             searchRequestBuilder
-                .setSource(queryText);
+                    .setSource(queryText);
         }
         SearchResponse response = searchRequestBuilder
                 .execute()
