@@ -14,16 +14,23 @@ import java.util.List;
 public class Bucket<T extends BucketItem> {
 
     private String name;
+    
+    private String type;
 
     private List<T> items;
 
+    public Bucket(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }    
+    
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getType() {
+        return type;
+    }    
 
     public List<T> getItems() {
         return items;
@@ -35,8 +42,7 @@ public class Bucket<T extends BucketItem> {
 
     @Override
     public String toString() {
-        return "Navigation{" + "name=" + name + ", items=" + items + '}';
+        return "Bucket{" + "name=" + name + ", type=" + type + ", items=" + items + '}';
     }
 
-    
 }

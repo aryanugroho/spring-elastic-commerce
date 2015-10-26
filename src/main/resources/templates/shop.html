@@ -246,9 +246,9 @@
                                 <!--*/-->
                             </div><!--/category-productsr-->
 
-                            <div th:if="${aggregations?.buckets}" class="brands_products" th:each="bucket : ${aggregations.buckets}"><!--brands_products-->
-                                <h2 th:text="${bucket.name}">Brands</h2>
-                                <div class="brands-name">
+                            <div class="brands_products" th:if="${aggregations?.buckets}" th:each="bucket : ${aggregations.buckets}"><!--brands_products-->
+                                <h2 th:text="${bucket.name}" th:if="${bucket.type == 'term'}">Brands</h2>
+                                <div class="brands-name" th:if="${bucket.type == 'term'}">
                                     <ul class="nav nav-pills nav-stacked" th:each="bucketItem : ${bucket.items}">
                                         <li><a href="javascript://"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span><span th:text="${bucketItem.name}">Acne</span></a></li>
                                         <!--/*-->
