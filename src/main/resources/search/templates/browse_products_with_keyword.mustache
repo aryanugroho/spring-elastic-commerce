@@ -6,21 +6,38 @@
           "terms": {
             "field": "brand"
           }
+        },
+        "min_price": {
+            "min": {
+                "field": "price"
+            }
+        }
+        ,
+        "max_price": {
+            "max": {
+                "field": "price"
+            }
         }
       },
-   "query":{  
-      "bool":{  
-         "must":{  
-            "prefix": {
-                "categoriesMap": "{{categoriesMap}}"
-            }
-         },
-         "must":{  
-            "query_string":{  
-               "default_field":"title",
-               "query":"{{keyword}}"
-            }
-         }
-      }
-   }
+
+
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "prefix": {
+                        "categoriesMap": "{{categoriesMap}}"
+                    }
+                },
+                {
+                    "query_string":{  
+                        "default_field":"title",
+                        "query":"{{keyword}}"
+                     }
+                }
+            ],
+            "filter": []
+        }
+    }
+
 }

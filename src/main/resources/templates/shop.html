@@ -246,9 +246,9 @@
                                 <!--*/-->
                             </div><!--/category-productsr-->
 
-                            <div class="brands_products" th:if="${aggregations?.buckets}" th:each="bucket : ${aggregations.buckets}"><!--brands_products-->
-                                <h2 th:text="${bucket.name}" th:if="${bucket.type == 'term'}">Brands</h2>
-                                <div class="brands-name" th:if="${bucket.type == 'term'}">
+                            <div class="brands_products" th:if="${bucket.type == 'term'}" th:each="bucket : ${aggregations.buckets}"><!--brands_products-->
+                                <h2 th:text="${bucket.name}">Brands</h2>
+                                <div class="brands-name">
                                     <ul class="nav nav-pills nav-stacked" th:each="bucketItem : ${bucket.items}">
                                         <li><a href="javascript://"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span><span th:text="${bucketItem.name}">Acne</span></a></li>
                                         <!--/*-->
@@ -263,11 +263,11 @@
                                 </div>
                             </div><!--/brands_products-->
 
-                            <div class="price-range"><!--price-range-->
-                                <h2>Price Range</h2>
+                            <div class="price-range" th:if="${bucket.type == 'minmax'}" th:each="bucket : ${aggregations.buckets}"><!--price-range-->
+                                <h2 th:text="${bucket.name}">Price Range</h2>
                                 <div class="well">
                                     <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" /><br />
-                                    <b>$ 0</b> <b class="pull-right">$ 600</b>
+                                    <b th:text="'$'+${bucket.item.min}">$ 0</b> <b th:text="'$'+${bucket.item.max}" class="pull-right">$ 600</b>
                                 </div>
                             </div><!--/price-range-->
 
@@ -280,7 +280,7 @@
 
                     <ol id="query-filters" class="breadcrumb pull-right" th:if="${query != null}">
                         <li class="active" th:each="filter : ${query.filters}">
-                            <span th:text="${filter.name}" name='ssdsd'>Home</span>
+                            <span th:text="${filter.name}">Home</span>
                             <span href="#" th:if="${filter?.value}" th:each="value : ${filter.value}">
                                 <span th:text="${value}">Text</span><a href="#"><i class="glyphicon glyphicon-remove-circle"></i></a>
                             </span>
@@ -291,12 +291,7 @@
                         <!--*/-->
                         <li><a th:href="${#strings.substring(pageurl,0,#strings.indexOf(pageurl,'?'))}">Clear All</a></li>
                     </ol>
-
-
-
-
-
-                    <div id="features_items" data-th-attr="data-pageurl=${#strings.substring(pageurl,0,#strings.indexOf(pageurl,'?'))}" class="col-sm-9 padding-right" th:if="${aggregations.page?.content}">
+                    <div id="features_items" th:name="${cleanpageurl}" class="col-sm-9 padding-right" th:if="${aggregations.page?.content}">
                         <div class="features_items"><!--features_items-->
                             <div class="col-sm-4" th:each="product : ${aggregations.page.content}">
                                 <div class="product-image-wrapper">
@@ -658,13 +653,13 @@
 
                         function addFilter(name, value) {
                             if (filters[name]) {
-                                if(filters[name].indexOf(value) === -1) {
+                                if (filters[name].indexOf(value) === -1) {
                                     filters[name].push(value);
-                                }                                                                
+                                }
                             }
                             else {
                                 filters[name] = [value];
-                            }                            
+                            }
                             openUpdatedFilterUrl();
                         }
                         function removeFilter(name, value) {
@@ -682,13 +677,13 @@
                                     filterTexts.push(filterName + "=" + filters[filterName].join(','));
                                 }
                             }
-                            var filteredUrl ;
+                            var filteredUrl;
                             if (filterTexts.length !== 0) {
-                                filteredUrl = $("#features_items").attr('data-pageurl') + '?' + filterTexts.join('&');
+                                filteredUrl = $("#features_items").attr('name') + '?' + filterTexts.join('&');
                             } else {
-                                filteredUrl = $("#features_items").attr('data-pageurl');
+                                filteredUrl = $("#features_items").attr('name');
                             }
-                            
+
                             window.location = filteredUrl;
 
                         }

@@ -6,11 +6,29 @@
             "terms": {
                 "field": "brand"
             }
+        },
+        "min_price": {
+            "min": {
+                "field": "price"
+            }
+        }
+        ,
+        "max_price": {
+            "max": {
+                "field": "price"
+            }
         }
     },
     "query": {
-        "prefix": {
-            "categoriesMap": "{{categoriesMap}}"
+        "bool": {
+            "must": [
+                {
+                    "prefix": {
+                        "categoriesMap": "{{categoriesMap}}"
+                    }
+                }
+            ],
+            "filter": []
         }
     }
 }

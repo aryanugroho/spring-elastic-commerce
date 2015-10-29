@@ -7,6 +7,7 @@ package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.service.CategoryService;
 import static com.sample.ecommerce.util.HttpUtil.getPageUrl;
+import static com.sample.ecommerce.util.HttpUtil.getQuery;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.zols.datastore.query.Query;
 import org.zols.datatore.exception.DataStoreException;
 
 @Controller
@@ -26,12 +28,9 @@ public class CategoryController {
     @RequestMapping(value = "/{categoryId}")
     public String browseByCategory(Model model,
             @PathVariable("categoryId") String categoryId,
-            Pageable pageable) throws DataStoreException {
-        model.addAttribute("category", categoryService.findOne(categoryId));
-        model.addAttribute("parents", categoryService.getParents(categoryId));
-        model.addAttribute("pageurl","/categories/"+categoryId);
-        model.addAttribute("aggregations", categoryService.findByCategory(categoryId, null,pageable));
-        return "shop";
+            HttpServletRequest request,
+            Pageable pageable) throws DataStoreException {        
+        return browseByCategoryWithKeyword(model, categoryId, null, request, pageable);
     }
 
     @RequestMapping(value = "/{categoryId}/{keyword}")
@@ -40,10 +39,15 @@ public class CategoryController {
             @PathVariable("keyword") String keyword,
             HttpServletRequest request,
             Pageable pageable) throws DataStoreException {
+        Query query = getQuery(request);
+        model.addAttribute("query", query);        
         model.addAttribute("category", categoryService.findOne(categoryId));
         model.addAttribute("parents", categoryService.getParents(categoryId));
-        model.addAttribute("pageurl",getPageUrl(request));
-        model.addAttribute("aggregations", categoryService.findByCategory(categoryId, keyword,pageable));
+        model.addAttribute("aggregations", categoryService.findByCategory(categoryId, keyword, query,pageable));
+        String pageUrl = getPageUrl(request);
+        model.addAttribute("pageurl", pageUrl);
+        int indexOfQuestionMark = pageUrl.indexOf("?");
+        model.addAttribute("cleanpageurl", (indexOfQuestionMark == -1) ? pageUrl : pageUrl.substring(0, indexOfQuestionMark));
         return "shop";
     }
 

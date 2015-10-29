@@ -6,18 +6,19 @@
 package com.sample.ecommerce.domain;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.data.domain.Page;
 
 public class AggregatedResults {
 
-    private List<Bucket> buckets;
+    private List<Map<String,Object>> buckets;
     private Page<List> page;
 
-    public List<Bucket> getBuckets() {
+    public List<Map<String, Object>> getBuckets() {
         return buckets;
     }
 
-    public void setBuckets(List<Bucket> buckets) {
+    public void setBuckets(List<Map<String, Object>> buckets) {
         this.buckets = buckets;
     }
 

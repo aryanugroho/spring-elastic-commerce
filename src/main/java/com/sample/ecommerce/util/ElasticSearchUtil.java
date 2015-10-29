@@ -9,16 +9,13 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.sample.ecommerce.domain.AggregatedResults;
-import com.sample.ecommerce.domain.Bucket;
-import com.sample.ecommerce.domain.BucketItem;
-import com.sample.ecommerce.domain.MinMaxItem;
-import com.sample.ecommerce.domain.TextItem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -73,14 +70,14 @@ public class ElasticSearchUtil {
 //    public List<Map<String, Object>> search(String type, String template, Object model) {
 //        return resultsOf(searchResponse(type, template, model));
 //    }
-    private List<Bucket> bucketsOf(Map<String, Object> searchResponse) {
-        List<Bucket> buckets = null;
+    private List<Map<String, Object>> bucketsOf(Map<String, Object> searchResponse) {
+        List<Map<String, Object>> buckets = null;
         if (searchResponse != null) {
             Map<String, Object> aggregations = (Map<String, Object>) searchResponse.get("aggregations");
             if (aggregations != null) {
-                Bucket bucket;
-                BucketItem bucketItem;
-                List<BucketItem> bucketItems;
+                Map<String, Object> bucket;
+                Map<String, Object> bucketItem;
+                List<Map<String, Object>> bucketItems;
                 List<Map<String, Object>> bucketsMaps;
 
                 buckets = new ArrayList<>();
@@ -89,31 +86,26 @@ public class ElasticSearchUtil {
 
                     aggregationName = entrySet.getKey();
                     if (!aggregationName.startsWith("max_")) {
-                        
-                        if (aggregationName.startsWith("min_")) {
-                            bucket = new Bucket(aggregationName.replaceAll("min_", ""),"minmax");
-                            bucketsMaps = (List<Map<String, Object>>) ((Map<String, Object>) entrySet.getValue()).get("buckets");
-                            bucketItems = new ArrayList<>();
-
-                            bucketItem = new MinMaxItem();
-                            ((MinMaxItem) bucketItem).setMin(1);
-                            ((MinMaxItem) bucketItem).setMax(8);
-//                                bucketItem.setName(bucketsMap.get("key").toString());
-//                                bucketItem.setCount((Integer) bucketsMap.get("doc_count"));
-                            bucketItems.add(bucketItem);
-
-                            bucket.setItems(bucketItems);
-                        } else {
-                            bucket = new Bucket(aggregationName,"term");                            
+                        bucket = new HashMap<>();
+                        if (aggregationName.startsWith("min_")) {                            
+                            bucket.put("name", aggregationName.replaceAll("min_", ""));
+                            bucket.put("type", "minmax");
+                            bucketItem = new HashMap<>();
+                            bucketItem.put("min",((Map<String, Object>)aggregations.get(aggregationName)).get("value"));
+                            bucketItem.put("max",((Map<String, Object>)aggregations.get(aggregationName.replaceAll("min_", "max_"))).get("value"));
+                            bucket.put("item", bucketItem);
+                        } else {                            
+                            bucket.put("name", aggregationName);
+                            bucket.put("type", "term");
                             bucketsMaps = (List<Map<String, Object>>) ((Map<String, Object>) entrySet.getValue()).get("buckets");
                             bucketItems = new ArrayList<>();
                             for (Map<String, Object> bucketsMap : bucketsMaps) {
-                                bucketItem = new TextItem();
-                                bucketItem.setName(bucketsMap.get("key").toString());
-                                bucketItem.setCount((Integer) bucketsMap.get("doc_count"));
+                                bucketItem = new HashMap<>();
+                                bucketItem.put("name",bucketsMap.get("key").toString());
+                                bucketItem.put("count",(Integer) bucketsMap.get("doc_count"));
                                 bucketItems.add(bucketItem);
                             }
-                            bucket.setItems(bucketItems);
+                            bucket.put("items",bucketItems);
                         }
                         buckets.add(bucket);
                     }
