@@ -250,7 +250,11 @@
                                 <h2 th:text="${bucket.name}">Brands</h2>
                                 <div class="brands-name">
                                     <ul class="nav nav-pills nav-stacked" th:each="bucketItem : ${bucket.items}">
-                                        <li><a href="javascript://"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span><span th:text="${bucketItem.name}">Acne</span></a></li>
+                                        <li>
+                                            <a href="javascript://"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span>
+                                                <span th:text="${bucketItem.name}">Acne</span>
+                                            </a>
+                                        </li>
                                         <!--/*-->
                                         <li><a href=""> <span class="pull-right">(56)</span>Grüne Erde</a></li>
                                         <li><a href=""> <span class="pull-right">(27)</span>Albiro</a></li>
@@ -266,8 +270,10 @@
                             <div class="price-range" th:if="${bucket.type == 'minmax'}" th:each="bucket : ${aggregations.buckets}"><!--price-range-->
                                 <h2 th:text="${bucket.name}">Price Range</h2>
                                 <div class="well">
-                                    <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" /><br />
-                                    <b th:text="'$'+${bucket.item.min}">$ 0</b> <b th:text="'$'+${bucket.item.max}" class="pull-right">$ 600</b>
+                                    <input type="text" class="span2" value="" data-th-attr="data-slider-min=${bucket.item.min}, data-slider-max=${bucket.item.max}" data-slider-min="0" data-slider-max="600" data-slider-step="2" data-slider-value="[5,8]" id="sl2" />
+                                    <br />
+                                    <b th:text="'$'+${bucket.item.min}">$ 0</b> 
+                                    <b th:text="'$'+${bucket.item.max}" class="pull-right">$ 600</b>
                                 </div>
                             </div><!--/price-range-->
 
