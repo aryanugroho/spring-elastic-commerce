@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.zols.datastore.query.Filter;
 import static org.zols.datastore.query.Filter.Operator.EQUALS;
 import static org.zols.datastore.query.Filter.Operator.EXISTS_IN;
+import static org.zols.datastore.query.Filter.Operator.IN_BETWEEN;
 import org.zols.datastore.query.Query;
 
 /**
@@ -47,11 +48,19 @@ public class HttpUtil {
                             String value = v[0];
                             if (value.contains(",")) {
                                 query.addFilter(new Filter(k, EXISTS_IN, Arrays.asList(value.split(","))));
-                            } else {
+                            } 
+                            else if(value.matches("\\[(.*?)\\]")) {
+                                String[] rangeValues = value.substring(1).replaceAll("]", "").split("-");
+                                query.addFilter(new Filter(k, IN_BETWEEN, Double.parseDouble(rangeValues[0]), Double.parseDouble(rangeValues[1])));
+                            }
+                            else {
                                 query.addFilter(new Filter(k, EQUALS, value));
                             }
                         }
                     }
+                }
+                if(query.getFilters().isEmpty()) {
+                    query = null;
                 }
             }
         }
