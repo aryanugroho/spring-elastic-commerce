@@ -26,9 +26,12 @@ public class HttpUtil {
      * @return
      */
     public static String getPageUrl(HttpServletRequest request) {
-        String url = request.getRequestURI() + "?" + request.getQueryString();
-        url = url.replaceAll("[&?]page.*?(?=&|\\?|$)", "")
-                .replaceAll("[&?]size.*?(?=&|\\?|$)", "");
+        String url = request.getRequestURI();
+        if (request.getQueryString() != null) {
+            url = url + "?" + request.getQueryString();
+            url = url.replaceAll("[&?]page.*?(?=&|\\?|$)", "")
+                    .replaceAll("[&?]size.*?(?=&|\\?|$)", "");
+        }
         return url;
     }
 
@@ -48,18 +51,16 @@ public class HttpUtil {
                             String value = v[0];
                             if (value.contains(",")) {
                                 query.addFilter(new Filter(k, EXISTS_IN, Arrays.asList(value.split(","))));
-                            } 
-                            else if(value.matches("\\[(.*?)\\]")) {
+                            } else if (value.matches("\\[(.*?)\\]")) {
                                 String[] rangeValues = value.substring(1).replaceAll("]", "").split("-");
                                 query.addFilter(new Filter(k, IN_BETWEEN, Double.parseDouble(rangeValues[0]), Double.parseDouble(rangeValues[1])));
-                            }
-                            else {
+                            } else {
                                 query.addFilter(new Filter(k, EQUALS, value));
                             }
                         }
                     }
                 }
-                if(query.getFilters().isEmpty()) {
+                if (query.getFilters().isEmpty()) {
                     query = null;
                 }
             }

@@ -38,16 +38,15 @@ public class CoreConfiguration {
 
     @PostConstruct
     private void setup() throws DataStoreException {
-        try {
-            uploadSchema();
-        } catch (URISyntaxException | IOException | DataStoreException ex) {
-            Logger.getLogger(CoreConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            uploadSchema();
+//        } catch (URISyntaxException | IOException | DataStoreException ex) {
+//            Logger.getLogger(CoreConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
     }
 
     private static String getContentFromStream(InputStream inputStream) {
-
         java.util.Scanner scanner = new java.util.Scanner(inputStream, "UTF-8").useDelimiter("\\A");
         String theString = scanner.hasNext() ? scanner.next() : "";
         scanner.close();
@@ -73,9 +72,9 @@ public class CoreConfiguration {
             try {
                 if (inputStream instanceof FileInputStream) {
                     File dataFile = new File("schema" + File.separator + "data" + File.separator + schemaId + ".json");
-                    if(dataFile.exists()) {
+                    if (dataFile.exists()) {
                         dataInputStream = new FileInputStream(dataFile);
-                    }                    
+                    }
                 } else {
                     dataInputStream = CoreConfiguration.class.getResourceAsStream("/default_schema/data/" + schemaId + ".json");
                 }

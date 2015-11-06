@@ -131,7 +131,7 @@
                     </ol>   
 
                     <div class="col-sm-3">
-                        <div class="left-sidebar">
+                        <div class="left-sidebar" th:if="${aggregations != null}">
                             <h2 th:if="${category?.children}">Browse</h2>
                             <div th:if="${category?.children}" class="panel-group category-products" id="accordian"><!--category-productsr-->
                                 <div th:each="child : ${category.children}" class="panel panel-default">
@@ -297,7 +297,7 @@
                         <!--*/-->
                         <li><a th:href="${#strings.substring(pageurl,0,#strings.indexOf(pageurl,'?'))}">Clear All</a></li>
                     </ol>
-                    <div id="features_items" th:name="${cleanpageurl}" class="col-sm-9 padding-right" th:if="${aggregations.page?.content}">
+                    <div id="features_items" th:name="${cleanpageurl}" class="col-sm-9 padding-right" th:if="${aggregations != null}">
                         <div class="features_items"><!--features_items-->
                             <div class="col-sm-4" th:each="product : ${aggregations.page.content}">
                                 <div class="product-image-wrapper">

@@ -21,6 +21,6 @@ public class ElasticSearchConfiguration {
                 .put("path.home", "/")
                 .put("path.data", "data")
                 .put("index.number_of_replicas", 0).build();
-        return nodeBuilder().settings(settings).local(true).build().start().client();
+        return nodeBuilder().settings(settings).build().start().client();
     }
 }

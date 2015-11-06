@@ -43,9 +43,13 @@ public class ProductService {
             Query query) throws DataStoreException {
         Map<String, Object> browseQuery = new HashMap<>();
         browseQuery.put("keyword", keyword);
-        return elasticSearchUtil.aggregatedSearch("product",
+        AggregatedResults aggregatedResults = elasticSearchUtil.aggregatedSearch("product",
                 "search_products_with_keyword",
                 browseQuery,pageable,query);
+        if(aggregatedResults != null) {
+            
+        }
+        return aggregatedResults;
     }
 
 }

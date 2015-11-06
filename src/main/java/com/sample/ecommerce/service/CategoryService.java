@@ -70,17 +70,22 @@ public class CategoryService {
             String keyword,
             Query query,
             Pageable pageable) throws DataStoreException {
-        Map<String, Object> browseQuery = new HashMap<>();
-        List<Category> parents = getParents(categoryId);
-        if (parents == null) {
-            parents = new ArrayList<>();
+        AggregatedResults aggregatedResults = null ;
+        Category category = findOne(categoryId);
+        if (category != null) {
+            Map<String, Object> browseQuery = new HashMap<>();
+            List<Category> parents = getParents(categoryId);
+            if (parents == null) {
+                parents = new ArrayList<>();
+            }
+            parents.add(category);
+            browseQuery.put("categoriesMap", parents.stream().map(parentsCategory -> parentsCategory.getId()).collect(joining("_")));
+            browseQuery.put("keyword", keyword);
+            aggregatedResults = elasticSearchUtil.aggregatedSearch("product",
+                    (keyword == null) ? "browse_products" : "browse_products_with_keyword",
+                    browseQuery, pageable, query);
         }
-        parents.add(findOne(categoryId));
-        browseQuery.put("categoriesMap", parents.stream().map(category -> category.getId()).collect(joining("_")));
-        browseQuery.put("keyword", keyword);        
-        return elasticSearchUtil.aggregatedSearch("product",
-                (keyword == null) ? "browse_products" : "browse_products_with_keyword",
-                browseQuery,pageable,query);
+        return aggregatedResults;
     }
 
     public Category findOne(String id) throws DataStoreException {

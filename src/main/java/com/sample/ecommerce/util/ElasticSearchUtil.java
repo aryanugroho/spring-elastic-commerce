@@ -51,12 +51,16 @@ public class ElasticSearchUtil {
             String template,
             Map<String, Object> browseQuery,
             Pageable pageable, Query query) {
-        AggregatedResults aggregatedResults = new AggregatedResults();
+        AggregatedResults aggregatedResults = null;
         browseQuery.put("size", pageable.getPageSize());
         browseQuery.put("from", (pageable.getPageNumber() * pageable.getPageSize()));
         Map<String, Object> searchResponse = searchResponse(type, template, browseQuery, query);
-        aggregatedResults.setPage(resultsOf(searchResponse, pageable));
-        aggregatedResults.setBuckets(bucketsOf(searchResponse));
+        Page<List> resultsOf = resultsOf(searchResponse, pageable);
+        if (resultsOf != null) {
+            aggregatedResults = new AggregatedResults();
+            aggregatedResults.setPage(resultsOf);
+            aggregatedResults.setBuckets(bucketsOf(searchResponse));
+        }
         return aggregatedResults;
     }
 
@@ -87,25 +91,25 @@ public class ElasticSearchUtil {
                     aggregationName = entrySet.getKey();
                     if (!aggregationName.startsWith("max_")) {
                         bucket = new HashMap<>();
-                        if (aggregationName.startsWith("min_")) {                            
+                        if (aggregationName.startsWith("min_")) {
                             bucket.put("name", aggregationName.replaceAll("min_", ""));
                             bucket.put("type", "minmax");
                             bucketItem = new HashMap<>();
-                            bucketItem.put("min",((Map<String, Object>)aggregations.get(aggregationName)).get("value"));
-                            bucketItem.put("max",((Map<String, Object>)aggregations.get(aggregationName.replaceAll("min_", "max_"))).get("value"));
+                            bucketItem.put("min", ((Map<String, Object>) aggregations.get(aggregationName)).get("value"));
+                            bucketItem.put("max", ((Map<String, Object>) aggregations.get(aggregationName.replaceAll("min_", "max_"))).get("value"));
                             bucket.put("item", bucketItem);
-                        } else {                            
+                        } else {
                             bucket.put("name", aggregationName);
                             bucket.put("type", "term");
                             bucketsMaps = (List<Map<String, Object>>) ((Map<String, Object>) entrySet.getValue()).get("buckets");
                             bucketItems = new ArrayList<>();
                             for (Map<String, Object> bucketsMap : bucketsMaps) {
                                 bucketItem = new HashMap<>();
-                                bucketItem.put("name",bucketsMap.get("key").toString());
-                                bucketItem.put("count",(Integer) bucketsMap.get("doc_count"));
+                                bucketItem.put("name", bucketsMap.get("key").toString());
+                                bucketItem.put("count", (Integer) bucketsMap.get("doc_count"));
                                 bucketItems.add(bucketItem);
                             }
-                            bucket.put("items",bucketItems);
+                            bucket.put("items", bucketItems);
                         }
                         buckets.add(bucket);
                     }
