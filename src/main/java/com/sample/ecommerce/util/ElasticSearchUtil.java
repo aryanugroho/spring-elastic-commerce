@@ -106,6 +106,7 @@ public class ElasticSearchUtil {
                             for (Map<String, Object> bucketsMap : bucketsMaps) {
                                 bucketItem = new HashMap<>();
                                 bucketItem.put("name", bucketsMap.get("key").toString());
+                                bucketItem.put("label", bucketsMap.get("key").toString());
                                 bucketItem.put("count", (Integer) bucketsMap.get("doc_count"));
                                 bucketItems.add(bucketItem);
                             }

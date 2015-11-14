@@ -252,7 +252,7 @@
                                     <ul class="nav nav-pills nav-stacked" th:each="bucketItem : ${bucket.items}">
                                         <li>
                                             <a href="javascript://"> <span class="pull-right" th:text="'('+${bucketItem.count}+')'">(50)</span>
-                                                <span th:text="${bucketItem.name}">Acne</span>
+                                                <span th:name="${bucketItem.name}" th:text="${bucketItem.label}">Acne</span>
                                             </a>
                                         </li>
                                         <!--/*-->
@@ -650,11 +650,11 @@
                         console.log(filters);
 
                         $('#query-filters .glyphicon-remove-circle').on("click", function (e) {
-                            removeFilter($(this).closest("li").children().first().text(), $(this).parent().prev().text());
+                            removeFilter($(this).closest("li").children().first().text(), $(this).parent().prev().attr('name'));
                         });
 
                         $(".brands-name a").on("click", function (e) {
-                            addFilter($(this).parent().parent().parent().prev().text(), $(this).children().last().text());
+                            addFilter($(this).parent().parent().parent().prev().text(), $(this).children().last().attr('name'));
                         });
 
                         function addFilter(name, value) {

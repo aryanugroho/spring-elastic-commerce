@@ -38,11 +38,11 @@ public class CoreConfiguration {
 
     @PostConstruct
     private void setup() throws DataStoreException {
-//        try {
-//            uploadSchema();
-//        } catch (URISyntaxException | IOException | DataStoreException ex) {
-//            Logger.getLogger(CoreConfiguration.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            uploadSchema();
+        } catch (URISyntaxException | IOException | DataStoreException ex) {
+            Logger.getLogger(CoreConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

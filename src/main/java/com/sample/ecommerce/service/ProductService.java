@@ -8,7 +8,9 @@ package com.sample.ecommerce.service;
 import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.util.ElasticSearchUtil;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class ProductService {
 
     @Autowired
     private DataStore dataStore;
+    
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     private ElasticSearchUtil elasticSearchUtil;
@@ -46,8 +51,15 @@ public class ProductService {
         AggregatedResults aggregatedResults = elasticSearchUtil.aggregatedSearch("product",
                 "search_products_with_keyword",
                 browseQuery,pageable,query);
-        if(aggregatedResults != null) {
-            
+        if(aggregatedResults != null && aggregatedResults.getBuckets() != null) {
+            aggregatedResults.getBuckets().stream().filter(map->map.get("name").equals("categories"))
+                    .forEach( map-> { ((List<Map<String,Object>>)map.get("items")).forEach(categoryMap->{
+                        try {
+                            categoryMap.put("label",categoryService.findOne(categoryMap.get("name").toString()).getLabel());
+                        } catch (DataStoreException ex) {
+                            java.util.logging.Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });});
         }
         return aggregatedResults;
     }
