@@ -676,6 +676,12 @@
                             openUpdatedFilterUrl();
                         }
 
+                        console.log('hi');
+                        //http://www.eyecon.ro/bootstrap-slider/#
+                        $('#sl2').on('slideStart', function(e){
+                            console.log('slider');
+                        });
+
                         function openUpdatedFilterUrl() {
                             var filterTexts = [];
                             for (var filterName in filters) {
