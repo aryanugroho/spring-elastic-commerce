@@ -613,9 +613,8 @@
                                 <a th:if="${aggregations.page.first}" href="javascript:void(0);">&laquo;</a>
                             </li>
 
-                            <li th:each="pageNo : ${#numbers.sequence(0, aggregations.page.totalPages - 1)}" th:class="${aggregations.page.number eq pageNo}? 'active' : ''">
-                                <a th:if="${aggregations.page.number  eq pageNo}" href="javascript:void(0);" th:text="${pageNo + 1}"/>
-                                <a th:if="${not (aggregations.page.number  eq pageNo)}" th:href="@{${pageurl}(page=${pageNo},size=${aggregations.page.size})}" th:text="${pageNo + 1}"/>
+                            <li th:each="pageNo : ${#numbers.sequence(0, (aggregations.page.totalPages -1) % 3)}" th:class="${aggregations.page.number eq (pageNo + aggregations.page.number)}? 'active' : ''">
+                                <a th:href="@{${pageurl}(page=${pageNo + aggregations.page.number},size=${aggregations.page.size})}" th:text="${pageNo + aggregations.page.number + 1}"/>
                             </li>
                             <li th:class="${aggregations.page.number + 1 ge aggregations.page.totalPages} ? 'disabled' : ''">
                                 <a th:if="${not aggregations.page.last}" th:href="@{${pageurl}(page=${aggregations.page.number+1},size=${aggregations.page.size})}">&raquo;</a>
