@@ -270,7 +270,7 @@
                             <div class="price-range" th:if="${bucket.type == 'minmax'}" th:each="bucket : ${aggregations.buckets}"><!--price-range-->
                                 <h2 th:text="${bucket.name}">Price Range</h2>
                                 <div class="well">
-                                    <input type="text" class="span2" value="" data-th-attr="data-slider-min=${bucket.item.min}, data-slider-max=${bucket.item.max}, data-slider-value='['+${bucket.item.min}+','+${bucket.item.max}+']',data-slider-step=${(bucket.item.max-bucket.item.min)/4}" data-slider-min="0" data-slider-max="600" data-slider-step="2" data-slider-value="[5,8]" id="sl2" />
+                                    <input type="text" class="span2" value="" data-th-attr="data-slider-min=${#numbers.formatInteger(bucket.item.min, 1)}, data-slider-max=${bucket.item.max}, data-slider-value='['+${bucket.item.min}+','+${bucket.item.max}+']',data-slider-step=${(bucket.item.max-bucket.item.min)/4}" data-slider-min="0" data-slider-max="600" data-slider-step="2" data-slider-value="[5,8]" id="sl2" />
                                     <br />
                                     <b th:text="'$'+${bucket.item.min}">$ 0</b> 
                                     <b th:text="'$'+${bucket.item.max}" class="pull-right">$ 600</b>
@@ -668,6 +668,12 @@
                             }
                             openUpdatedFilterUrl();
                         }
+
+                        function setFilter(name, value) {
+                            console.log(value);
+                            filters[name] = value;
+                            openUpdatedFilterUrl();
+                        }
                         function removeFilter(name, value) {
                             var i = filters[name].indexOf(value);
                             if (i !== -1) {
@@ -678,15 +684,17 @@
 
                         console.log('hi');
                         //http://www.eyecon.ro/bootstrap-slider/#
-                        $('#sl2').on('slideStart', function(e){
-                            console.log('slider');
+                        $('.price-range .well .span2').on('slideStart', function (e) {
+                            setFilter($(this).parent().parent().prev().text(), '[' + e.value[0] + '-' + e.value[1] + ']');
                         });
 
                         function openUpdatedFilterUrl() {
                             var filterTexts = [];
                             for (var filterName in filters) {
-                                if (filters[filterName].length !== 0) {
+                                if( Object.prototype.toString.call( filters[filterName] ) === '[object Array]' ) {
                                     filterTexts.push(filterName + "=" + filters[filterName].join(','));
+                                }else {
+                                    filterTexts.push(filterName + "=" + filters[filterName]);
                                 }
                             }
                             var filteredUrl;
