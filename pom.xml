@@ -6,6 +6,7 @@
     
     <name>ECommerce Sample</name>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sample.ecommerce</groupId>
     <artifactId>ecommerce</artifactId>
     <packaging>jar</packaging>
     <parent>
@@ -21,14 +22,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity3</artifactId>
         </dependency>
         
         <dependency>
@@ -75,15 +68,11 @@
     <build>
         <plugins>            
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>                
-            </plugin> 
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration> 
                     <excludes> 
-                        <exclude>**/src/main/java/com/sample/ecommerce/ThmeleafExtension.java</exclude> 
+                        <exclude>com/sample/ecommerce/*.class</exclude> 
                     </excludes> 
                 </configuration>
             </plugin>           
