@@ -8,6 +8,7 @@ package com.sample.ecommerce.web;
 import com.sample.ecommerce.domain.Term;
 import com.sample.ecommerce.service.TermService;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,8 @@ public class TermAPIController {
     }
 
     @RequestMapping(value = "/suggest/{keyword}")
-    public List<Term> suggest(@PathVariable("keyword") String keyword) {
-        LOGGER.info("Getting terms ");
+    public List<Map<String, Object>> suggest(@PathVariable("keyword") String keyword) {
+        LOGGER.info("Getting term suggessions ");
         return termService.suggest(keyword);
     }
 

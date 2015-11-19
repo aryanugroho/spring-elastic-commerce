@@ -49,13 +49,13 @@ public class ElasticSearchUtil {
 
     public AggregatedResults aggregatedSearch(String type,
             String template,
-            Map<String, Object> browseQuery,
+            Map<String, Object> queryValuesMap,
             Pageable pageable, Query query) {
         AggregatedResults aggregatedResults = null;
-        browseQuery.put("size", pageable.getPageSize());
-        browseQuery.put("from", (pageable.getPageNumber() * pageable.getPageSize()));
-        Map<String, Object> searchResponse = searchResponse(type, template, browseQuery, query);
-        Page<List> resultsOf = resultsOf(searchResponse, pageable);
+        queryValuesMap.put("size", pageable.getPageSize());
+        queryValuesMap.put("from", (pageable.getPageNumber() * pageable.getPageSize()));
+        Map<String, Object> searchResponse = searchResponse(type, template, queryValuesMap, query);
+        Page<List> resultsOf = pageOf(searchResponse, pageable);
         if (resultsOf != null) {
             aggregatedResults = new AggregatedResults();
             aggregatedResults.setPage(resultsOf);
@@ -66,9 +66,9 @@ public class ElasticSearchUtil {
 
     public AggregatedResults aggregatedSearch(String type,
             String template,
-            Map<String, Object> browseQuery,
+            Map<String, Object> queryValuesMap,
             Pageable pageable) {
-        return aggregatedSearch(type, template, browseQuery, pageable, null);
+        return aggregatedSearch(type, template, queryValuesMap, pageable, null);
     }
 
 //    public List<Map<String, Object>> search(String type, String template, Object model) {
@@ -122,22 +122,36 @@ public class ElasticSearchUtil {
         return buckets;
     }
 
-    private Page<List> resultsOf(Map<String, Object> searchResponse, Pageable pageable) {
+    private Page<List> pageOf(Map<String, Object> searchResponse, Pageable pageable) {
         Page<List> page = null;
+        List<Map<String, Object>> list = resultsOf(searchResponse);
+        if (list != null) {
+            Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
+            page = new PageContentImpl(list, pageable, noOfRecords);
+        }
+        return page;
+    }
+    
+    public List<Map<String, Object>> resultsOf(String type,
+            String template,
+            Map<String, Object> queryValuesMap) {
+        return resultsOf(searchResponse(type, template, queryValuesMap));
+    }
+
+    private List<Map<String, Object>> resultsOf(Map<String, Object> searchResponse) {
+
         List<Map<String, Object>> list = null;
         if (searchResponse != null) {
             Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
-
             if (0 != noOfRecords) {
                 List<Map<String, Object>> recordsMapList = (List<Map<String, Object>>) ((Map<String, Object>) searchResponse.get("hits")).get("hits");
                 list = new ArrayList<>(recordsMapList.size());
                 for (Map<String, Object> recordsMapList1 : recordsMapList) {
                     list.add((Map<String, Object>) recordsMapList1.get("_source"));
                 }
-                page = new PageContentImpl(list, pageable, noOfRecords);
             }
         }
-        return page;
+        return list;
     }
 
     public Map<String, Object> searchResponse(String type, String queryText, Query query) {

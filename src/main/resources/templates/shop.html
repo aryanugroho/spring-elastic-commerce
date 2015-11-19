@@ -303,7 +303,7 @@
                                 <div class="product-image-wrapper">
                                     <div class="single-products">
                                         <div class="productinfo text-center">
-                                            <a href="#">
+                                            <a th:href="${product.productUrl}">
                                                 <img src="images/shop/product12.jpg" th:src="@{${product.imageUrl}}" alt="" />
                                             </a>
                                             <h2 th:text="'$' + ${product.price}">$56</h2>
@@ -625,7 +625,6 @@
                 </div>
                 <script src="js/price-range.js" th:src="@{/js/price-range.js}"></script>
                 <script src="js/jquery.scrollUp.min.js" th:src="@{/js/jquery.scrollUp.min.js}"></script>
-                <script src="js/bootstrap3-typeahead.min.js" th:src="@{/js/bootstrap3-typeahead.min.js}"></script>
                 <script src="js/jquery.prettyPhoto.js" th:src="@{/js/jquery.prettyPhoto.js}"></script>
                 <script src="js/main.js" th:src="@{/js/main.js}"></script>
                 <script th:inline="javascript">

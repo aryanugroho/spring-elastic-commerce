@@ -1,11 +1,13 @@
 [
     {
         "imageUrl": "/images/shop/iphone.png",
+        "productUrl": "/products/1",
         "id": "1",
         "categories": ["mobiles"],
         "title": "iPhone",
         "categoriesMap": ["electronics_mobiles"],
         "brand": "Apple",
+        "salesRank":1,
         "price":1
     }
 ]

@@ -47,6 +47,9 @@
             "imageUrl": {
                 "type": "string"
             },
+            "productUrl": {
+                "type": "string"
+            },
             "id": {
                 "type": "string"
             },
@@ -69,6 +72,9 @@
                 "type": "string"
             },
             "price": {
+                "type": "number"
+            },
+            "salesRank": {
                 "type": "number"
             }
         },

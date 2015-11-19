@@ -43,6 +43,12 @@ public class ProductService {
         return dataStore.read("product", id);
     }
     
+    public List<Map<String, Object>> suggest(String keyword) {
+        Map<String, Object> browseQuery = new HashMap<>();
+        browseQuery.put("keyword", keyword);
+        return elasticSearchUtil.resultsOf("product", "suggest_products_with_keyword", browseQuery);
+    }
+    
     public AggregatedResults search(String keyword,
             Pageable pageable,
             Query query) throws DataStoreException {

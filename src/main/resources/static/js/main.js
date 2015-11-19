@@ -28,38 +28,3 @@ $(document).ready(function () {
         });
     });
 });
-
-/** Type ahead */
-$(document).ready(function () {
-    var $input = $('.typeahead');
-    $input.typeahead({source: [{id: "apple", name: "Apple"},
-            {id: "iPhone", name: "iPhone"},
-            {id: "mobiles", name: "Mobiles"},
-            {id: "electronics", name: "Electronics"},
-            {id: "tvs", name: "TVs"},
-            {id: "washingmachine", name: "Washingmachine"}
-        ], templates: {
-            empty: [
-                '<div class="empty-message">',
-                'unable to find any Best Picture winners that match the current query',
-                '</div>'
-            ].join('\n'),
-            suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{id}}</p>')
-        },
-        autoSelect: false});
-    $input.change(function () {
-        var current = $input.typeahead("getActive");
-        if (current) {
-            // Some item from your model is active!
-            if (current.name === $input.val()) {
-                // This means the exact match is found. Use toLowerCase() if you want case insensitive match.
-            } else {
-                // This means it is only a partial match, you can either add a new item 
-                // or take the active if you don't want new items
-            }
-        } else {
-            // Nothing is active so it is a new value (or maybe empty value)
-        }
-        location.href = "/products/search/" + $input.val();
-    });
-});

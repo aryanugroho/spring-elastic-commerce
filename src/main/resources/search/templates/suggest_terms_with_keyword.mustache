@@ -5,14 +5,13 @@
             "should": [
                 {
                     "match_phrase_prefix": {
-                        "title": "{{keyword}}"
+                        "term": "{{keyword}}"
                     }
                 },
                 {
-                    "query_string":{  
-                        "default_field":"title",
-                        "query":"{{keyword}}"
-                     }
+                    "match": {
+                        "term": "{{keyword}}"
+                    }
                 }
             ],
             "boost": 1

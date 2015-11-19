@@ -8,6 +8,7 @@ package com.sample.ecommerce.web;
 import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.service.ProductService;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -38,6 +39,13 @@ public class ProductAPIController {
         LOGGER.info("Getting product {}", id);
         return productService.findOne(id);
     }
+    
+    @RequestMapping(value = "/suggest/{keyword}")
+    public List<Map<String, Object>> suggest(@PathVariable("keyword") String keyword) {
+        LOGGER.info("Getting product suggesions ");
+        return productService.suggest(keyword);
+    }
+
 
     @RequestMapping(value = "/search/{keyword}", method = GET)
     public AggregatedResults keywordSearch(@PathVariable(value = "keyword") String keyword,

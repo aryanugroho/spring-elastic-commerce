@@ -1,66 +1,82 @@
 [
     {
         "imageUrl": "/images/shop/galaxynote.png",
+        "productUrl": "/products/4",
         "id": "4",
         "categories": ["tablets"],
         "categoriesMap": ["electronics_tablets"],
         "title": "Galaxy Note",
         "brand": "Samsung",
+        "salesRank":4,
         "price":4
     }, {
         "imageUrl": "/images/shop/lenovomixx.png",
+        "productUrl": "/products/9",
         "id": "9",
         "categories": ["laptops", "tablets"],
         "categoriesMap": ["electronics_tablets", "electronics_computer_laptops"],
         "title": "Mixx 3",
         "brand": "Lenovo",
+        "salesRank":9,
         "price":9
     }, {
         "imageUrl": "/images/shop/nexus.png",
+        "productUrl": "/products/5",
         "id": "5",
         "categories": ["tablets"],
         "categoriesMap": ["electronics_tablets"],
         "title": "Nexus",
         "brand": "Google",
+        "salesRank":5,
         "price":5
     }, {
         "imageUrl": "/images/shop/panasonicviera.png",
+        "productUrl": "/products/6",
         "id": "6",
         "categories": ["lcdtv"],
         "categoriesMap": ["electronics_tv_lcdtv"],
         "title": "Viera",
         "brand": "Panasonic",
+        "salesRank":6,
         "price":6
     }, {
         "imageUrl": "/images/shop/imac.png",
+        "productUrl": "/products/2",
         "id": "2",
         "categories": ["desktop"],
         "categoriesMap": ["electronics_computer_desktop"],
         "title": "iMac",
         "brand": "Apple",
+        "salesRank":2,
         "price":2
     }, {
         "imageUrl": "/images/shop/sonybravia.png",
+        "productUrl": "/products/7",
         "id": "7",
         "categories": ["ledtv"],
         "categoriesMap": ["electronics_tv_ledtv"],
         "title": "Bravia",
         "brand": "Sony",
+        "salesRank":7,
         "price":7
     }, {
         "imageUrl": "/images/shop/iair.png",
+        "productUrl": "/products/3",
         "id": "3",
         "categories": ["laptops"],
         "categoriesMap": ["electronics_computer_laptops"],
         "title": "iAir",
         "brand": "Apple",
+        "salesRank":3,
         "price":3
     }, {
         "imageUrl": "/images/shop/sonyvaio.png",
+        "productUrl": "/products/8",
         "id": "8",
         "categories": ["laptops"],
         "categoriesMap": ["electronics_computer_laptops"],
         "title": "VAIO",
         "brand": "Sony",
+        "salesRank":8,
         "price":8
     }]

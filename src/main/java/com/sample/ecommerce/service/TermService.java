@@ -6,7 +6,10 @@
 package com.sample.ecommerce.service;
 
 import com.sample.ecommerce.domain.Term;
+import com.sample.ecommerce.util.ElasticSearchUtil;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +24,18 @@ public class TermService {
             .getLogger(TermService.class);
     @Autowired
     private DataStore dataStore;
-    public List<Term> suggest(String keyword) {
-        return null;
+    
+    
+    @Autowired
+    private ElasticSearchUtil elasticSearchUtil;
+
+    public List<Map<String, Object>> suggest(String keyword) {
+        Map<String, Object> browseQuery = new HashMap<>();
+        browseQuery.put("keyword", keyword);
+        return elasticSearchUtil.resultsOf("term", "suggest_terms_with_keyword", browseQuery);
     }
 
-    public <S extends Term> List<Term> save(List<? extends Term>  itrbl) throws DataStoreException {
+    public <S extends Term> List<Term> save(List<? extends Term> itrbl) throws DataStoreException {
         itrbl.forEach(term -> {
             try {
                 dataStore.create(term);
