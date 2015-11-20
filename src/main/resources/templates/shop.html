@@ -286,7 +286,7 @@
 
                     <ol id="query-filters" class="breadcrumb pull-right" th:if="${query != null}">
                         <li class="active" th:each="filter : ${query.filters}">
-                            <span th:text="${filter.name}">Home</span>
+                            <span th:text="${filter.name}" th:name="${filter.name}">Home</span>
                             <span href="#" th:if="${filter?.value}" th:each="value : ${filter.value}">
                                 <span th:text="${value}">Text</span><a href="#"><i class="glyphicon glyphicon-remove-circle"></i></a>
                             </span>
@@ -648,7 +648,7 @@
                         console.log(filters);
 
                         $('#query-filters .glyphicon-remove-circle').on("click", function (e) {
-                            removeFilter($(this).closest("li").children().first().text(), $(this).parent().prev().attr('name'));
+                            removeFilter($(this).closest("li").children().first().text(), $(this).parent().prev().html());
                         });
 
                         $(".brands-name a").on("click", function (e) {
@@ -673,14 +673,17 @@
                             openUpdatedFilterUrl();
                         }
                         function removeFilter(name, value) {
+                            console.log('removefilter ' + name + ' == ' + value);
                             var i = filters[name].indexOf(value);
                             if (i !== -1) {
                                 filters[name].splice(i, 1);
+                                if(filters[name].length === 0) {
+                                    delete filters[name];
+                                }
                             }
                             openUpdatedFilterUrl();
                         }
 
-                        console.log('hi');
                         //http://www.eyecon.ro/bootstrap-slider/#
                         $('.price-range .well .span2').on('slideStart', function (e) {
                             setFilter($(this).parent().parent().prev().text(), '[' + e.value[0] + '-' + e.value[1] + ']');
