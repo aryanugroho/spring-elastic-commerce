@@ -42,7 +42,7 @@ $(document).ready(function() {
   $('#demo-input').typeahead({
     hint: $('.Typeahead-hint'),
     menu: $('.Typeahead-menu'),
-    minLength: 1,
+    minLength: 0,
     autoSelect: true,
     classNames: {
       open: 'is-open',

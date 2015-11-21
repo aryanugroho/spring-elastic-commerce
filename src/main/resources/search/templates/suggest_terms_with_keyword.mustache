@@ -4,17 +4,22 @@
         "bool": {
             "should": [
                 {
+                    "match": {
+                        "term": "{{keyword}}"
+                    }
+                },
+                {
                     "match_phrase_prefix": {
                         "term": "{{keyword}}"
                     }
                 },
                 {
-                    "match": {
-                        "term": "{{keyword}}"
+                    "query_string": {
+                        "default_field": "term",
+                        "query": "{{keyword}}"
                     }
                 }
-            ],
-            "boost": 1
+            ]
         }
     }
 }
