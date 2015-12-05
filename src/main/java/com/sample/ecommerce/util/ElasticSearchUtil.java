@@ -131,7 +131,28 @@ public class ElasticSearchUtil {
         }
         return page;
     }
-    
+
+    public Page<List> pageOf(String type,
+            String template,
+            Map<String, Object> queryValuesMap, Pageable pageable) {
+        Page<List> page = null;
+        queryValuesMap.put("size", pageable.getPageSize());
+        queryValuesMap.put("from", (pageable.getPageNumber() * pageable.getPageSize()));
+        Map<String, Object> searchResponse = searchResponse(type, template, queryValuesMap);
+        List<Map<String, Object>> list = resultsOf(searchResponse);
+        if (list != null) {
+            Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
+            page = new PageContentImpl(list, pageable, noOfRecords);
+        }
+        return page;
+    }
+
+    public Page<List> pageOf(String type,
+            String template,Pageable pageable) {
+        
+        return pageOf(type, template, new HashMap<String, Object>(2), pageable);
+    }
+
     public List<Map<String, Object>> resultsOf(String type,
             String template,
             Map<String, Object> queryValuesMap) {

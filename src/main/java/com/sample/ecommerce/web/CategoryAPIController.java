@@ -6,16 +6,15 @@
 package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.domain.AggregatedResults;
-import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.service.CategoryService;
 import static com.sample.ecommerce.util.HttpUtil.getQuery;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -32,13 +31,13 @@ public class CategoryAPIController {
     private CategoryService categoryService;
 
     @RequestMapping(value = "/{id}/parents", method = GET)
-    public List<Category> parents(@PathVariable(value = "id") String id) throws DataStoreException {
+    public List<Map<String,Object>> parents(@PathVariable(value = "id") String id) throws DataStoreException {
         LOGGER.info("Getting parents of category {}", id);
         return categoryService.getParents(id);
     }
 
     @RequestMapping(value = "/{id}/children", method = GET)
-    public List<Category> children(@PathVariable(value = "id") String id) throws DataStoreException {
+    public List<Map<String,Object>> children(@PathVariable(value = "id") String id) throws DataStoreException {
         LOGGER.info("Getting children of category {}", id);
         return categoryService.getChildren(id);
     }

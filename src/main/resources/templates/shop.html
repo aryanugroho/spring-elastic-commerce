@@ -132,8 +132,8 @@
 
                     <div class="col-sm-3">
                         <div class="left-sidebar" th:if="${aggregations != null}">
-                            <h2 th:if="${category?.children}">Browse</h2>
-                            <div th:if="${category?.children}" class="panel-group category-products" id="accordian"><!--category-productsr-->
+                            <h2 th:if="${category !=null and category['children'] != null}">Browse</h2>
+                            <div th:if="${category !=null and category['children'] != null}" class="panel-group category-products" id="accordian"><!--category-productsr-->
                                 <div th:each="child : ${category.children}" class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
@@ -299,7 +299,7 @@
                     </ol>
                     <div id="features_items" th:name="${cleanpageurl}" class="col-sm-9 padding-right" th:if="${aggregations != null}">
                         <div class="features_items"><!--features_items-->
-                            <div class="col-sm-4" th:each="product : ${aggregations.page.content}">
+                            <div class="col-sm-4" th:each="product : ${aggregations.page.content}" th:include="ecommerce/fragments/thumbnails::product">
                                 <div class="product-image-wrapper">
                                     <div class="single-products">
                                         <div class="productinfo text-center">
@@ -873,11 +873,6 @@
             </div>
 
         </footer><!--/Footer-->
-
-
-
-
-
 
 
     </body>

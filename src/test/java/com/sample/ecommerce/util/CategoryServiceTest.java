@@ -6,26 +6,25 @@
 package com.sample.ecommerce.util;
 
 import com.sample.ecommerce.Application;
-import static com.sample.ecommerce.util.ElasticSearchUtil.getContentFromClasspath;
-import java.util.Map;
-import org.junit.Assert;
+import com.sample.ecommerce.service.CategoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.zols.datatore.exception.DataStoreException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-public class ElasticSearchUtilTest {
+public class CategoryServiceTest {
 
     @Autowired
-    private ElasticSearchUtil elasticSearchUtil;
+    private CategoryService categoryService;
 
     @Test
-    public void testSearchResponse() {
-        Map<String, Object> response = elasticSearchUtil.searchResponse("product", getContentFromClasspath("/com/sample/ecommerce/util/queries/search_products.json"));
-        Assert.assertNotNull(response);
+    public void testSearchResponse() throws DataStoreException {
+//        List<Map<String, Object>> children = categoryService.getChildren("slippersandflipflops");
+//        Assert.assertNotNull(children);
     }
 
 }

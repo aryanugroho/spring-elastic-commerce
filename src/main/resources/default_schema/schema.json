@@ -80,7 +80,7 @@
         },
         "required": ["title", "brand", "categories", "imageUrl"]
     },
-    "mobile": {        
+    "mobile": {
         "$ref": "product",
         "title": "Mobile",
         "type": "object",
@@ -90,6 +90,30 @@
             }
         },
         "required": ["operatingSystem"]
+    },
+    "offer": {
+        "type": "object",
+        "title": "Offer",
+        "idField": "id",
+        "labelField": "title",
+        "properties": {
+            "imageUrl": {
+                "type": "string"
+            },
+            "offerUrl": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            }
+        },
+        "required": ["title", "id", "offerUrl", "imageUrl"]
     }
 
 }

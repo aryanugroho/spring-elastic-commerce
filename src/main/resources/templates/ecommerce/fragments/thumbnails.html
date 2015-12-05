@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <title>Product Details | E-Shopper</title>
+    </head><!--/head-->
+
+    <body>
+        <div class="col-sm-4" th:fragment="product">
+            <div class="product-image-wrapper">
+                <div class="single-products">
+                    <div class="productinfo text-center">
+                        <a th:href="${product.productUrl}">
+                            <img src="images/shop/product12.jpg" th:src="@{${product.imageUrl}}" alt="" />
+                        </a>
+                        <h2 th:text="'$' + ${product.price}">$56</h2>
+                        <p th:text="${product.title}">Easy Polo Black Edition</p>                                            
+                        <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                    </div>                                        
+                </div>
+                <div class="choose">
+                    <ul class="nav nav-pills nav-justified">
+                        <li><a href=""><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+                        <li><a href=""><i class="fa fa-plus-square"></i>Add to compare</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -6,7 +6,6 @@
 package com.sample.ecommerce.service;
 
 import com.google.common.collect.Lists;
-import com.sample.ecommerce.domain.Category;
 import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.util.ElasticSearchUtil;
 import java.util.ArrayList;
@@ -37,13 +36,13 @@ public class CategoryService {
     @Autowired
     private ElasticSearchUtil elasticSearchUtil;
 
-    public List<Category> getParents(String categoryId) throws DataStoreException {
-        List<Category> parents = new ArrayList<>();
-        Category category;
+    public List<Map<String, Object>> getParents(String categoryId) throws DataStoreException {
+        List<Map<String, Object>> parents = new ArrayList<>();
+        Map<String, Object> category;
         String parent;
         category = findOne(categoryId);
         while (category != null) {
-            parent = category.getParent();
+            parent = (String) category.get("parent");
             if (parent != null) {
                 category = findOne(parent);
                 parents.add(category);
@@ -54,32 +53,32 @@ public class CategoryService {
         return (parents.isEmpty()) ? null : Lists.reverse(parents);
     }
 
-    public List<Category> getChildren(String categoryId) throws DataStoreException {
-        Query query = new Query();
-        query.addFilter(new Filter<>("parent", EQUALS, categoryId));
-        List<Category> children = dataStore.list(Category.class, query);
+    public List<Map<String, Object>> getChildren(String parentCategoryId) throws DataStoreException {
+        Map<String, Object> browseQuery = new HashMap<>();
+        browseQuery.put("parent", parentCategoryId);        
+        List<Map<String, Object>> children = elasticSearchUtil.resultsOf("category", "getchildren_of_categories", browseQuery);
         if (children != null) {
-            for (Category child : children) {
-                child.setChildren(getChildren(child.getId()));
+            for (Map<String, Object> child : children) {
+                child.put("children", getChildren((java.lang.String) child.get("id")));
             }
         }
-        return children.size() > 0 ? children : null;
+        return children ;
     }
 
     public AggregatedResults findByCategory(String categoryId,
             String keyword,
             Query query,
             Pageable pageable) throws DataStoreException {
-        AggregatedResults aggregatedResults = null ;
-        Category category = findOne(categoryId);
+        AggregatedResults aggregatedResults = null;
+        Map<String, Object> category = findOne(categoryId);
         if (category != null) {
             Map<String, Object> browseQuery = new HashMap<>();
-            List<Category> parents = getParents(categoryId);
+            List<Map<String, Object>> parents = getParents(categoryId);
             if (parents == null) {
                 parents = new ArrayList<>();
             }
             parents.add(category);
-            browseQuery.put("categoriesMap", parents.stream().map(parentsCategory -> parentsCategory.getId()).collect(joining("_")));
+            browseQuery.put("categoriesMap", parents.stream().map(parentCategory -> parentCategory.get("id").toString()).collect(joining("_")));
             browseQuery.put("keyword", keyword);
             aggregatedResults = elasticSearchUtil.aggregatedSearch("product",
                     (keyword == null) ? "browse_products" : "browse_products_with_keyword",
@@ -88,10 +87,19 @@ public class CategoryService {
         return aggregatedResults;
     }
 
-    public Category findOne(String id) throws DataStoreException {
-        Category category = dataStore.read(Category.class, id);
-        if (category != null) {
-            category.setChildren(getChildren(id));
+    public Map<String, Object> findOne(String id) throws DataStoreException {
+        return findOne(id, Boolean.FALSE);
+    }
+
+    public Map<String, Object> findOne(String id, Boolean withChildren) throws DataStoreException {
+        Map<String, Object> category = dataStore.read("category", id);
+        if (withChildren && category != null) {
+            try {
+                category.put("children", getChildren(id));
+            } catch (NullPointerException e) {
+                LOGGER.error("Elastic Search Issue", e);
+            }
+
         }
         return category;
     }

@@ -1,0 +1,16 @@
+[
+    {
+        "id": "1",
+        "offerUrl": "/products/1",
+        "title": "iPhone",
+        "description": "Iphone Offer",
+        "imageUrl": "/images/shop/iphone.png"
+    },
+    {
+        "id": "2",
+        "offerUrl": "/products/1",
+        "title": "iPhone",
+        "description": "Iphone Offer",
+        "imageUrl": "/images/shop/iphone.png"
+    }
+]

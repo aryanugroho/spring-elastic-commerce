@@ -7,7 +7,7 @@ package com.sample.ecommerce.web;
 
 import com.sample.ecommerce.domain.AggregatedResults;
 import com.sample.ecommerce.service.ProductService;
-import java.util.Arrays;
+import static com.sample.ecommerce.util.HttpUtil.getQuery;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RestController;
-import org.zols.datastore.query.Filter;
-import static org.zols.datastore.query.Filter.Operator.EQUALS;
-import static org.zols.datastore.query.Filter.Operator.EXISTS_IN;
-import org.zols.datastore.query.Query;
 import org.zols.datatore.exception.DataStoreException;
 
 @RestController
@@ -52,32 +48,8 @@ public class ProductAPIController {
             HttpServletRequest request,
             Pageable pageable) throws DataStoreException {
         LOGGER.info("Searching products for keyword {}", keyword);
-        Map<String, String[]> parameterMap = request.getParameterMap();
-
-        Query query = null;
-
-        if (parameterMap != null) {
-//            parameterMap.remove("page");
-//            parameterMap.remove("size");
-            if (!parameterMap.isEmpty()) {
-                query = new Query();
-                for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
-                    String k = entrySet.getKey();
-                    String[] v = entrySet.getValue();
-                    if (!k.equals("page") && !k.equals("size")) {
-                        if (v.length == 1) {
-                            String value = v[0];
-                            if (value.contains(",")) {
-                                query.addFilter(new Filter(k, EXISTS_IN, Arrays.asList(value.split(","))));
-                            } else {
-                                query.addFilter(new Filter(k, EQUALS, value));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return productService.search(keyword, pageable,query);
+        
+        return productService.search(keyword, pageable,getQuery(request));
     }
 
 }
