@@ -1,40 +1,52 @@
 [
     {
+        "id": "electronics",
+        "label": "Electronics",
+        "map": "electronics"
+    },
+    {
         "id": "computer",
         "label": "Computers",
-        "parent": "electronics"
+        "parent": "electronics",
+        "map": "electronics_computer"
 
+    },
+    {
+        "id": "laptops",
+        "label": "Laptops",
+        "parent": "computer",
+        "map": "electronics_computer_laptops"
+    },
+    {
+        "id": "desktop",
+        "label": "Desktop",
+        "parent": "computer",
+        "map": "electronics_computer_desktop"
     }, {
         "id": "mobiles",
         "label": "Mobiles",
-        "parent": "electronics"
+        "parent": "electronics",
+        "map": "electronics_mobiles"
 
     }, {
         "id": "tablets",
         "label": "Tablets",
-        "parent": "electronics"
-    }, {
-        "id": "laptops",
-        "label": "Laptops",
-        "parent": "computer"
-    }, {
-        "id": "desktop",
-        "label": "Desktop",
-        "parent": "computer"
+        "parent": "electronics",
+        "map": "electronics_tablets"
     }, {
         "id": "tv",
         "label": "TV",
-        "parent": "electronics"
+        "parent": "electronics",
+        "map": "electronics_tv"
     }, {
         "id": "lcdtv",
         "label": "LCD TV",
-        "parent": "tv"
+        "parent": "tv",
+        "map": "electronics_tv_lcdtv"
     }, {
         "id": "ledtv",
         "label": "LED TV",
-        "parent": "tv"
-    }, {
-        "id": "electronics",
-        "label": "Electronics"
+        "parent": "tv",
+        "map": "electronics_tv_ledtv"
     }
 ]

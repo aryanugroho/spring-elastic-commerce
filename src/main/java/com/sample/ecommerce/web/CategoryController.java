@@ -41,7 +41,7 @@ public class CategoryController {
             Pageable pageable) throws DataStoreException {
         Query query = getQuery(request);
         model.addAttribute("query", query);        
-        model.addAttribute("category", categoryService.findOne(categoryId));
+        model.addAttribute("category", categoryService.findOne(categoryId,true));
         model.addAttribute("parents", categoryService.getParents(categoryId));
         model.addAttribute("aggregations", categoryService.findByCategory(categoryId, keyword, query,pageable));
         String pageUrl = getPageUrl(request);

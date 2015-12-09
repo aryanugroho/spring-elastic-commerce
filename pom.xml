@@ -57,6 +57,7 @@
                 <configuration> 
                     <excludes> 
                         <exclude>com/sample/ecommerce/*.class</exclude> 
+                        <exclude>default_schema/data/*.json</exclude>
                     </excludes> 
                 </configuration>
             </plugin>           

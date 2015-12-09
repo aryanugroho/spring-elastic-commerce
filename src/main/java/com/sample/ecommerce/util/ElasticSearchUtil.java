@@ -28,6 +28,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import static org.zols.datastore.elasticsearch.ElasticSearchDataStore.getQueryBuilder;
@@ -127,7 +128,7 @@ public class ElasticSearchUtil {
         List<Map<String, Object>> list = resultsOf(searchResponse);
         if (list != null) {
             Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
-            page = new PageContentImpl(list, pageable, noOfRecords);
+            page = new PageImpl(list, pageable, noOfRecords);
         }
         return page;
     }
@@ -142,7 +143,7 @@ public class ElasticSearchUtil {
         List<Map<String, Object>> list = resultsOf(searchResponse);
         if (list != null) {
             Integer noOfRecords = (Integer) ((Map<String, Object>) searchResponse.get("hits")).get("total");
-            page = new PageContentImpl(list, pageable, noOfRecords);
+            page = new PageImpl(list, pageable, noOfRecords);
         }
         return page;
     }

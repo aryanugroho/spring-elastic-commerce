@@ -17,10 +17,12 @@ package com.sample.ecommerce;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.ComponentScan;
 import org.zols.plugin.EnableCMS;
 
 @SpringBootApplication
 @EnableCMS
+@ComponentScan("com.sample.ecommerce")
 public class Application {
 
     public static void main(String[] args) throws Exception {
